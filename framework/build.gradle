@@ -1,0 +1,4 @@
+jar {
+    baseName = 'thrones-famework'
+    version = '1.0.1'
+}

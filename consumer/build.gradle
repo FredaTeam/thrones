@@ -1,0 +1,10 @@
+jar {
+    baseName = 'thrones-consumer'
+    version = '1.0.1'
+}
+
+dependencies {
+
+    compile project(':framework')
+
+}

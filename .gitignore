@@ -1,0 +1,16 @@
+.settings/
+/.gradle/
+/.idea/
+*/build/
+/classes/
+*.iml
+*.ipr
+*.iws
+logs/
+*.log
+*.port
+/tmp/
+**/.DS_Store
+.DS_Store
+out/
+/shared/tmp/pids/*.pid

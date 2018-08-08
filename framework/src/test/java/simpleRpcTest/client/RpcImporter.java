@@ -18,22 +18,22 @@ public class RpcImporter<S> {
         return (S) Proxy.newProxyInstance(serviceClass.getClassLoader(),
                 new Class<?>[]{serviceClass.getInterfaces()[0]},
                 (proxy, method, args) -> {
-                    Socket server = null;
+                    Socket socket = null;
                     ObjectInputStream objectInputStream = null;
                     ObjectOutputStream objectOutputStream = null;
                     try {
-                        server = new Socket();
-                        server.connect(address);
-                        objectOutputStream = new ObjectOutputStream(server.getOutputStream());
+                        socket = new Socket();
+                        socket.connect(address);
+                        objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                         objectOutputStream.writeUTF(serviceClass.getName());
                         objectOutputStream.writeUTF(method.getName());
                         objectOutputStream.writeObject(method.getParameterTypes());
                         objectOutputStream.writeObject(args);
-                        objectInputStream = new ObjectInputStream(server.getInputStream());
+                        objectInputStream = new ObjectInputStream(socket.getInputStream());
                         return objectInputStream.readObject();
                     } finally {
-                        if(server!=null){
-                            server.close();
+                        if(socket!=null){
+                            socket.close();
                         }
                         if(objectOutputStream!=null){
                             objectOutputStream.close();

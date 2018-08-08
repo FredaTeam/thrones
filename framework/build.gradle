@@ -6,9 +6,7 @@ jar {
 
 dependencies {
 
-    compile group: 'io.netty', name: 'netty-all', version: '4.1.28.Final'
-
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.6.1'
 
-
+    compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
 }

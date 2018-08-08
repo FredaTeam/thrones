@@ -19,6 +19,12 @@ allprojects{
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 }
+
+def junitVersion = '4.12'
+def slf4jApiVersion = '1.7.25'
+def nettyVersion = '4.1.28.Final'
+def lombokVersion = '1.18.2'
+
 subprojects{
 
     repositories {
@@ -32,11 +38,15 @@ subprojects{
     }
 
     dependencies {
-        //JAVA
+        // COMPILE
         compile fileTree(dir:'libs',include:'*.jar')
+        compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jApiVersion
+        compile group: 'io.netty', name: 'netty-all', version: nettyVersion
 
-        //TEST
-        testCompile group: 'junit', name: 'junit', version: '4.12'
+        // TEST
+        testCompile group: 'junit', name: 'junit', version: junitVersion
+
+        compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
     }
 }
 

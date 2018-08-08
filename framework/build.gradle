@@ -6,6 +6,9 @@ jar {
 
 dependencies {
 
-    compile 'io.netty:netty-all:4.1.28.Final'
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.28.Final'
+
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.6.1'
+
 
 }

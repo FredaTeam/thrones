@@ -1,5 +1,3 @@
-# Thrones
-
 # Server Architecture
 ## RPC Layer
 

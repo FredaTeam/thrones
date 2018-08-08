@@ -35,7 +35,17 @@ public abstract class BaseMsg
 
     }
 
-    public abstract void bytesToMsg();
+    public void bytesToMsg()
+    {
+        /**
+         * empty method
+         */
+    }
 
-    public abstract void msgToBytes();
+    public void msgToBytes()
+    {
+        /**
+         * empty method
+         */
+    }
 }

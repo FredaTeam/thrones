@@ -48,4 +48,20 @@ public abstract class BaseMsg
          * empty method
          */
     }
+
+    public Header getHeader() {
+        return header;
+    }
+
+    public void setHeader(Header header) {
+        this.header = header;
+    }
+
+    public byte[] getBodyBytes() {
+        return bodyBytes;
+    }
+
+    public void setBodyBytes(byte[] bodyBytes) {
+        this.bodyBytes = bodyBytes;
+    }
 }

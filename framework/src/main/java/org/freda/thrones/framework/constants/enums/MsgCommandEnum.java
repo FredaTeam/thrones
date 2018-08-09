@@ -2,6 +2,7 @@ package org.freda.thrones.framework.constants.enums;
 
 import org.freda.thrones.framework.msg.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 /**
@@ -39,6 +40,10 @@ public enum MsgCommandEnum {
                 .findFirst().get();
     }
 
+    public BaseMsg msgInstanceOf(Header header, byte[] bodyBytes) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException
+    {
+         return (BaseMsg) this.getClazz().getConstructor(Header.class, byte[].class).newInstance(header, bodyBytes);
+    }
     public byte getCommand() {
         return command;
     }

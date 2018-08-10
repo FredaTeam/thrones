@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.constants.enums;
+package org.freda.thrones.framework.enums;
 
 import org.freda.thrones.framework.msg.*;
 

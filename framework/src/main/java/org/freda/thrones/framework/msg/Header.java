@@ -1,8 +1,8 @@
 package org.freda.thrones.framework.msg;
 
 import org.freda.thrones.framework.constants.ThronesTCPConstant;
-import org.freda.thrones.framework.constants.enums.MsgCommandEnum;
-import org.freda.thrones.framework.constants.enums.MsgStatusEnum;
+import org.freda.thrones.framework.enums.MsgCommandEnum;
+import org.freda.thrones.framework.enums.MsgStatusEnum;
 import org.freda.thrones.framework.utils.NumberBytesConvertUtils;
 
 import java.util.concurrent.atomic.AtomicLong;

@@ -1,15 +1,12 @@
 package org.freda.thrones.framework.msg;
 
-import org.freda.thrones.framework.constants.enums.MsgCommandEnum;
-import org.freda.thrones.framework.constants.enums.MsgStatusEnum;
+import org.freda.thrones.framework.enums.MsgCommandEnum;
+import org.freda.thrones.framework.enums.MsgStatusEnum;
 
 public class ProcedureRespMsg extends BaseMsg {
 
 
     public ProcedureRespMsg() {
-
-
-        System.out.println();
     }
 
     /**
@@ -55,8 +52,18 @@ public class ProcedureRespMsg extends BaseMsg {
      * read bytes to msg.
      */
     @Override
-    protected void bytesToMsg() {
+    protected void bytesToMsg()
+    {
         
+    }
+
+    /**
+     * bean to bodyBytes
+     */
+    @Override
+    protected void msgToBytes()
+    {
+
     }
 
     public String getErrorMsg() {

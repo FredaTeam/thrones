@@ -1,5 +1,7 @@
 package org.freda.thrones.framework.constants;
 
+import org.freda.thrones.framework.enums.MsgSerializerEnum;
+
 public class ThronesTCPConstant {
 
     /**
@@ -10,4 +12,8 @@ public class ThronesTCPConstant {
      * Header len
      */
     public static final int THRONES_MSG_HEADER_LEN = 21;
+    /**
+     * default serializer.
+     */
+    public static final MsgSerializerEnum DEFAULT_SERIALIZER = MsgSerializerEnum.HESSIAN;
 }

@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.freda.thrones.framework.constants.Constants;
-import org.freda.thrones.framework.constants.enums.MsgStatusEnum;
+import org.freda.thrones.framework.enums.MsgStatusEnum;
 import org.freda.thrones.framework.msg.Header;
 import org.freda.thrones.framework.msg.ProcedureReqMsg;
 import org.freda.thrones.framework.msg.ProcedureRespMsg;

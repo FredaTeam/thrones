@@ -35,6 +35,8 @@ public abstract class BaseMsg
     {
         msgToBytes();
 
+        header.setTotalLen(ThronesTCPConstant.THRONES_MSG_HEADER_LEN + bodyBytes.length);
+
         byte[] commandBytes = new byte[ThronesTCPConstant.THRONES_MSG_HEADER_LEN + bodyBytes.length];
 
         System.arraycopy(header.toBytes(), 0, commandBytes, 0, ThronesTCPConstant.THRONES_MSG_HEADER_LEN);

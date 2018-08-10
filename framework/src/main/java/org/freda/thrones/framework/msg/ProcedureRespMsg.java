@@ -5,6 +5,13 @@ import org.freda.thrones.framework.constants.enums.MsgStatusEnum;
 
 public class ProcedureRespMsg extends BaseMsg {
 
+
+    public ProcedureRespMsg() {
+
+
+        System.out.println();
+    }
+
     /**
      * 用于手动创建Resp
      *

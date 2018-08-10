@@ -49,6 +49,12 @@ public class Header
         this.sequence = getSeq();
     }
 
+    public Header(MsgCommandEnum command, MsgStatusEnum status, Long sequence) {
+        this.command = command;
+        this.status = status;
+        this.sequence = sequence;
+    }
+
     public Header(String magic, MsgCommandEnum command, MsgStatusEnum status, Long sequence, int totalLen)
     {
         this.magic = magic;
@@ -57,6 +63,8 @@ public class Header
         this.sequence = sequence;
         this.totalLen = totalLen;
     }
+
+
 
     protected byte[] toBytes()
     {

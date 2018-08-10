@@ -15,6 +15,17 @@ public abstract class BaseMsg
     {
     }
 
+    public BaseMsg(Header header, byte[] bodyBytes)
+    {
+        this.header = header;
+
+        this.bodyBytes = bodyBytes;
+
+        this.bytesToMsg();
+    }
+
+
+
     /**
      * 消息转化为Bytes
      *
@@ -22,6 +33,8 @@ public abstract class BaseMsg
      */
     public byte[] toBytes()
     {
+        msgToBytes();
+
         byte[] commandBytes = new byte[ThronesTCPConstant.THRONES_MSG_HEADER_LEN + bodyBytes.length];
 
         System.arraycopy(header.toBytes(), 0, commandBytes, 0, ThronesTCPConstant.THRONES_MSG_HEADER_LEN);
@@ -31,18 +44,20 @@ public abstract class BaseMsg
         return commandBytes;
     }
 
-    private void read(){
-
-    }
-
-    public void bytesToMsg()
+    /**
+     * read bytes to msg.
+     */
+    protected void bytesToMsg()
     {
         /**
          * empty method
          */
     }
 
-    public void msgToBytes()
+    /**
+     * bean to bodyBytes
+     */
+    protected void msgToBytes()
     {
         /**
          * empty method
@@ -51,17 +66,5 @@ public abstract class BaseMsg
 
     public Header getHeader() {
         return header;
-    }
-
-    public void setHeader(Header header) {
-        this.header = header;
-    }
-
-    public byte[] getBodyBytes() {
-        return bodyBytes;
-    }
-
-    public void setBodyBytes(byte[] bodyBytes) {
-        this.bodyBytes = bodyBytes;
     }
 }

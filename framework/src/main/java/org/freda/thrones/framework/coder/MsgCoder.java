@@ -11,6 +11,14 @@ import java.util.List;
 
 public class MsgCoder extends ByteToMessageCodec<BaseMsg>
 {
+
+
+    /**
+     *
+     */
+    public MsgCoder() {
+    }
+
     /**
      * @param ctx
      * @param msg

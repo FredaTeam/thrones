@@ -6,7 +6,7 @@ jar {
 
 dependencies {
 
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.6.1'
+    compile group: 'com.caucho', name: 'hessian', version: '4.0.51'
 
     compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
 }

@@ -1,9 +1,10 @@
 buildscript {
     repositories {
         mavenCentral()
-        jcenter()
-        maven {url  "http://jcenter.bintray.com"}
-        maven { url 'https://plugins.gradle.org/m2/'}
+//        jcenter()
+//        maven {url  "http://jcenter.bintray.com"}
+//        maven { url 'https://plugins.gradle.org/m2/'}
+        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
     }
 }
 
@@ -29,11 +30,12 @@ subprojects{
 
     repositories {
         mavenCentral()
-        jcenter()
-        maven {url 'https://repo.spring.io/libs-milestone'}
-        maven {url 'https://repo.spring.io/libs-snapshot'}
-        maven {url  "http://jcenter.bintray.com"}
-        maven { url 'https://plugins.gradle.org/m2/'}
+//        jcenter()
+//        maven {url 'https://repo.spring.io/libs-milestone'}
+//        maven {url 'https://repo.spring.io/libs-snapshot'}
+//        maven {url  "http://jcenter.bintray.com"}
+//        maven { url 'https://plugins.gradle.org/m2/'}
+        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         flatDir { dirs 'libs'}
     }
 

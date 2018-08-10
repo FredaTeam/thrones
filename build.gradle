@@ -31,6 +31,7 @@ subprojects{
     repositories {
         mavenCentral()
 //        jcenter()
+
 //        maven {url 'https://repo.spring.io/libs-milestone'}
 //        maven {url 'https://repo.spring.io/libs-snapshot'}
 //        maven {url  "http://jcenter.bintray.com"}

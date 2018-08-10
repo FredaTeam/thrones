@@ -49,13 +49,15 @@ public class Header
         this.sequence = getSeq();
     }
 
-    public Header(MsgCommandEnum command, MsgStatusEnum status, Long sequence) {
+    public Header(MsgCommandEnum command, MsgStatusEnum status, Long sequence)
+    {
+        this.magic = ThronesTCPConstant.THRONES_TCP_MAGIC;
         this.command = command;
         this.status = status;
         this.sequence = sequence;
     }
 
-    public Header(String magic, MsgCommandEnum command, MsgStatusEnum status, Long sequence, int totalLen)
+    private Header(String magic, MsgCommandEnum command, MsgStatusEnum status, Long sequence, int totalLen)
     {
         this.magic = magic;
         this.command = command;

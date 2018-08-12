@@ -9,32 +9,12 @@ import java.net.URL;
  * <p>
  * list info and action from the point instead of a channel
  */
-public interface NodePoint {
+public interface NodePoint extends Closable {
 
     /**
      * get url of this point
      */
     URL getUrl();
-
-    /**
-     * close communication
-     */
-    void close();
-
-    /**
-     * close communication after time of timeout
-     */
-    void close(int timeout);
-
-    /**
-     * during closing
-     */
-    void closing();
-
-    /**
-     * close or not
-     */
-    boolean closed();
 
     /**
      * send message

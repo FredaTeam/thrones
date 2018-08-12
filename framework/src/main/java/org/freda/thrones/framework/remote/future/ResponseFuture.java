@@ -1,19 +1,19 @@
 package org.freda.thrones.framework.remote.future;
 
 import com.google.common.collect.Maps;
-import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.freda.thrones.framework.constants.Constants;
 import org.freda.thrones.framework.enums.MsgStatusEnum;
+import org.freda.thrones.framework.exceptions.LinkingException;
+import org.freda.thrones.framework.exceptions.TimeoutException;
 import org.freda.thrones.framework.msg.Header;
 import org.freda.thrones.framework.msg.ProcedureReqMsg;
 import org.freda.thrones.framework.msg.ProcedureRespMsg;
+import org.freda.thrones.framework.remote.ChannelChain;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,7 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * ResponseFuture
  */
 @Slf4j
-public class ResponseFuture implements SyncFuture<Object> {
+public class ResponseFuture implements Future {
 
     private static final Map<Long, ResponseFuture> FUTURES = Maps.newConcurrentMap();
 
@@ -38,7 +38,7 @@ public class ResponseFuture implements SyncFuture<Object> {
     private long id;
 
     // communication channel
-    private final Channel channel;
+    private final ChannelChain channelChain;
     // request
     private final ProcedureReqMsg procedureReqMsg;
     // timeout of client calling
@@ -53,8 +53,8 @@ public class ResponseFuture implements SyncFuture<Object> {
     private final Lock lock = new ReentrantLock();
     private final Condition done = lock.newCondition();
 
-    public ResponseFuture(Channel channel, ProcedureReqMsg procedureReqMsg, int timeout) {
-        this.channel = channel;
+    public ResponseFuture(ChannelChain channelChain, ProcedureReqMsg procedureReqMsg, int timeout) {
+        this.channelChain = channelChain;
         this.procedureReqMsg = procedureReqMsg;
         this.timeout = timeout > 0 ? timeout : Constants.DEFAULT_TIMEOUT;
         this.id = procedureReqMsg.getHeader().getSequence();
@@ -89,7 +89,7 @@ public class ResponseFuture implements SyncFuture<Object> {
     }
 
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public boolean cancel() {
         procedureRespMsg = new ProcedureRespMsg(
                 MsgStatusEnum.TIMEOUT,
                 id,
@@ -112,7 +112,7 @@ public class ResponseFuture implements SyncFuture<Object> {
     }
 
     @Override
-    public Object get() throws InterruptedException, ExecutionException {
+    public Object get() throws LinkingException {
         try {
             return get(timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
@@ -121,7 +121,7 @@ public class ResponseFuture implements SyncFuture<Object> {
     }
 
     @Override
-    public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public Object get(long timeout, TimeUnit unit) throws LinkingException {
         timeout = timeout >= 0 ? timeout : Constants.DEFAULT_TIMEOUT;
         if (!isDone()) {
             long start = System.currentTimeMillis();
@@ -134,11 +134,13 @@ public class ResponseFuture implements SyncFuture<Object> {
                         break;
                     }
                 }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             } finally {
                 lock.unlock();
             }
             if (!isDone()) {
-                throw new TimeoutException("calling timeout");
+                throw new TimeoutException(channelChain, "calling timeout");
             }
         }
         return fetchResponseMsg();
@@ -154,7 +156,7 @@ public class ResponseFuture implements SyncFuture<Object> {
             return respMsg.getResult();
         }
         if (MsgStatusEnum.TIMEOUT == status) {
-            throw new TimeoutException("calling timeout");
+            throw new TimeoutException(channelChain, "calling timeout");
         }
         throw new RuntimeException("fetch response error");
     }
@@ -197,7 +199,7 @@ public class ResponseFuture implements SyncFuture<Object> {
             }
         } else if (MsgStatusEnum.TIMEOUT == res.getHeader().getStatus()) {
             try {
-                TimeoutException exception = new TimeoutException(res.getErrorMsg());
+                TimeoutException exception = new TimeoutException(channelChain, res.getErrorMsg());
                 futureCallBack.failure(exception);
             } catch (Exception e) {
                 log.error("callback execute error,res: " + res.getResult(), e);

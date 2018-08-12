@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.concurrent;
+package org.freda.thrones.framework.remote.future;
 
 import java.util.concurrent.Future;
 

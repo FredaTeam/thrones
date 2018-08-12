@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.concurrent;
+package org.freda.thrones.framework.remote.future;
 
 import com.google.common.collect.Maps;
 import io.netty.channel.Channel;
@@ -31,6 +31,7 @@ public class ResponseFuture implements SyncFuture<Object> {
         compensateTask.setDaemon(true);
         compensateTask.start();
     }
+
     /**
      * @see Header#sequence
      */
@@ -68,7 +69,9 @@ public class ResponseFuture implements SyncFuture<Object> {
     public static void receiveRespMsg(ProcedureRespMsg respMsg) {
         ResponseFuture future = FUTURES.remove(respMsg.getHeader().getSequence());
         if (Objects.nonNull(future)) {
-
+            future.doReceive(respMsg);
+        } else {
+            log.warn("return response timeout");
         }
     }
 
@@ -81,15 +84,19 @@ public class ResponseFuture implements SyncFuture<Object> {
             lock.unlock();
         }
         if (Objects.nonNull(futureCallBack)) {
-            //todo
+            executeCallBack(futureCallBack);
         }
     }
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-
-        // todo
-        procedureRespMsg = new ProcedureRespMsg();
+        procedureRespMsg = new ProcedureRespMsg(
+                MsgStatusEnum.TIMEOUT,
+                id,
+                "calling timeout",
+                null,
+                false
+        );
         FUTURES.remove(id);
         return Boolean.TRUE;
     }
@@ -120,7 +127,7 @@ public class ResponseFuture implements SyncFuture<Object> {
             long start = System.currentTimeMillis();
             lock.lock();
             try {
-                // this way can cut down time before receive signal
+                // this way can reduce time before receive signal
                 while (!isDone()) {
                     done.await(timeout, Objects.nonNull(unit) ? unit : TimeUnit.MILLISECONDS);
                     if (isDone() || System.currentTimeMillis() - start > timeout) {
@@ -137,7 +144,6 @@ public class ResponseFuture implements SyncFuture<Object> {
         return fetchResponseMsg();
     }
 
-    // todo get object from response
     private Object fetchResponseMsg() throws TimeoutException {
         ProcedureRespMsg respMsg = procedureRespMsg;
         if (Objects.isNull(respMsg)) {
@@ -145,7 +151,7 @@ public class ResponseFuture implements SyncFuture<Object> {
         }
         MsgStatusEnum status = respMsg.getHeader().getStatus();
         if (MsgStatusEnum.SUCCESS == status) {
-            return respMsg;
+            return respMsg.getResult();
         }
         if (MsgStatusEnum.TIMEOUT == status) {
             throw new TimeoutException("calling timeout");
@@ -158,11 +164,53 @@ public class ResponseFuture implements SyncFuture<Object> {
         if (isDone()) {
             executeCallBack(callBack);
         } else {
-
+            boolean isDone = false;
+            lock.lock();
+            try {
+                if (!isDone()) {
+                    this.futureCallBack = callBack;
+                } else {
+                    isDone = true;
+                }
+            } finally {
+                lock.unlock();
+            }
+            if (isDone) {
+                executeCallBack(callBack);
+            }
         }
     }
 
     private void executeCallBack(FutureCallBack callBack) {
+        FutureCallBack futureCallBack = callBack;
+        if (Objects.isNull(futureCallBack)) {
+            throw new NullPointerException("callback can not be null");
+        }
+        // for gc
+        callBack = null;
+        ProcedureRespMsg res = procedureRespMsg;
+        if (MsgStatusEnum.SUCCESS == res.getHeader().getStatus()) {
+            try {
+                futureCallBack.success(res);
+            } catch (Exception e) {
+                log.error("callback execute error,res: " + res.getResult(), e);
+            }
+        } else if (MsgStatusEnum.TIMEOUT == res.getHeader().getStatus()) {
+            try {
+                TimeoutException exception = new TimeoutException(res.getErrorMsg());
+                futureCallBack.failure(exception);
+            } catch (Exception e) {
+                log.error("callback execute error,res: " + res.getResult(), e);
+            }
+        } else {
+            try {
+                RuntimeException exception = new RuntimeException(res.getErrorMsg());
+                futureCallBack.failure(exception);
+            } catch (Exception e) {
+                log.error("callback execute error,res: " + res.getResult(), e);
+            }
+        }
+
     }
 
     // timeout compensate
@@ -177,8 +225,16 @@ public class ResponseFuture implements SyncFuture<Object> {
                             continue;
                         }
                         if (System.currentTimeMillis() - future.start > future.timeout) {
-
+                            ProcedureRespMsg respMsg = new ProcedureRespMsg(
+                                    MsgStatusEnum.TIMEOUT,
+                                    future.id,
+                                    "calling timeout",
+                                    null,
+                                    false
+                            );
+                            receiveRespMsg(respMsg);
                         }
+                        TimeUnit.MILLISECONDS.sleep(50);
                     }
                 } catch (Exception e) {
                     log.error("timeoutCallCompensateTask error", e);
@@ -186,4 +242,5 @@ public class ResponseFuture implements SyncFuture<Object> {
             }
         }
     }
+
 }

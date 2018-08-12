@@ -1,8 +1,8 @@
 package org.freda.thrones.framework.constants;
 
-public interface Constants {
+public class Constants {
 
     // ms
-    int DEFAULT_TIMEOUT = 1000;
+    public static final int DEFAULT_TIMEOUT = 1000;
 
 }

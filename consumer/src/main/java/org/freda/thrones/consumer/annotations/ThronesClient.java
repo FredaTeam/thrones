@@ -16,4 +16,9 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD,ElementType.TYPE})
 public @interface ThronesClient {
 
+    public String name();
+
+    public String value();
+
+    public long maxAttempts();
 }

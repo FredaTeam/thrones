@@ -4,8 +4,6 @@ import org.freda.thrones.framework.constants.ThronesTCPConstant;
 import org.freda.thrones.framework.serializer.SerializerFactory;
 import org.freda.thrones.framework.utils.NumberBytesConvertUtils;
 
-import java.util.Arrays;
-
 public class ProcedureReqMsg extends BaseMsg {
 
     public ProcedureReqMsg(Header header, byte[] bodyBytes) {
@@ -69,12 +67,16 @@ public class ProcedureReqMsg extends BaseMsg {
         temp = new byte[argsLen];
         System.arraycopy(bodyBytes, pos, temp, 0, argsLen);
         this.args = (Object[]) SerializerFactory.getSerializer(ThronesTCPConstant.DEFAULT_SERIALIZER).deserialize(temp);
+        pos += argsLen;
 
-        argsTypes = new Class[args.length];
-        for (int i=0;i<args.length;i++)
-        {
-            argsTypes[i] = args[i].getClass();
-        }
+        temp = new byte[4];
+        System.arraycopy(bodyBytes, pos, temp, 0, 4);
+        int argsTypesLen = NumberBytesConvertUtils.bytes4ToInt(temp);
+        pos += 4;
+
+        temp = new byte[argsTypesLen];
+        System.arraycopy(bodyBytes, pos, temp, 0, argsTypesLen);
+        this.argsTypes = (Class<?>[])SerializerFactory.getSerializer(ThronesTCPConstant.DEFAULT_SERIALIZER).deserialize(temp);
     }
 
     /**
@@ -87,8 +89,9 @@ public class ProcedureReqMsg extends BaseMsg {
         byte[] itfNameBytes = itfName.getBytes();
         byte[] methodNameBytes = methodName.getBytes();
         byte[] argsBytes = SerializerFactory.getSerializer(ThronesTCPConstant.DEFAULT_SERIALIZER).serialize(args);
+        byte[] argsTypesBytes = SerializerFactory.getSerializer(ThronesTCPConstant.DEFAULT_SERIALIZER).serialize(argsTypes);
 
-        int bodyBytesTotalLen = 4 * 3 + itfNameBytes.length + methodNameBytes.length + argsBytes.length;
+        int bodyBytesTotalLen = 4 * 4 + itfNameBytes.length + methodNameBytes.length + argsBytes.length + argsTypesBytes.length;
 
         super.bodyBytes = new byte[bodyBytesTotalLen];
 
@@ -104,6 +107,11 @@ public class ProcedureReqMsg extends BaseMsg {
         System.arraycopy(NumberBytesConvertUtils.intToBytes4(argsBytes.length), 0, bodyBytes, pos, 4);
         pos += 4;
         System.arraycopy(argsBytes, 0, bodyBytes, pos, argsBytes.length);
+        pos += argsBytes.length;
+        System.arraycopy(NumberBytesConvertUtils.intToBytes4(argsTypesBytes.length), 0, bodyBytes, pos, 4);
+        pos += 4;
+        System.arraycopy(argsTypesBytes, 0, bodyBytes, pos, argsTypesBytes.length);
+
     }
 
     public Class<?>[] getArgsTypes() {
@@ -133,10 +141,5 @@ public class ProcedureReqMsg extends BaseMsg {
     public void setArgs(Object[] args)
     {
         this.args = args;
-        this.argsTypes = new Class[args.length];
-        for (int i=0;i<args.length;i++)
-        {
-            argsTypes[i] = args[i].getClass();
-        }
     }
 }

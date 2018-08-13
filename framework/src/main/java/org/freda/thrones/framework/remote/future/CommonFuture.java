@@ -5,9 +5,9 @@ import org.freda.thrones.framework.exceptions.LinkingException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Future
+ * CommonFuture
  */
-public interface Future {
+public interface CommonFuture {
 
     /**
      * done or not

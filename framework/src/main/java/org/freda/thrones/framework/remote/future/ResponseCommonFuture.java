@@ -19,12 +19,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * ResponseFuture
+ * ResponseCommonFuture
  */
 @Slf4j
-public class ResponseFuture implements Future {
+public class ResponseCommonFuture implements CommonFuture {
 
-    private static final Map<Long, ResponseFuture> FUTURES = Maps.newConcurrentMap();
+    private static final Map<Long, ResponseCommonFuture> FUTURES = Maps.newConcurrentMap();
 
     static {
         Thread compensateTask = new Thread(new TimeoutCallCompensateTask(), "compensateTask");
@@ -53,7 +53,7 @@ public class ResponseFuture implements Future {
     private final Lock lock = new ReentrantLock();
     private final Condition done = lock.newCondition();
 
-    public ResponseFuture(ChannelChain channelChain, ProcedureReqMsg procedureReqMsg, int timeout) {
+    public ResponseCommonFuture(ChannelChain channelChain, ProcedureReqMsg procedureReqMsg, int timeout) {
         this.channelChain = channelChain;
         this.procedureReqMsg = procedureReqMsg;
         this.timeout = timeout > 0 ? timeout : Constants.DEFAULT_TIMEOUT;
@@ -61,13 +61,13 @@ public class ResponseFuture implements Future {
         FUTURES.put(id, this);
     }
 
-    public static ResponseFuture getFuture(long id) {
+    public static ResponseCommonFuture getFuture(long id) {
         return FUTURES.get(id);
     }
 
     // client receive response and notify future to get
     public static void receiveRespMsg(ProcedureRespMsg respMsg) {
-        ResponseFuture future = FUTURES.remove(respMsg.getHeader().getSequence());
+        ResponseCommonFuture future = FUTURES.remove(respMsg.getHeader().getSequence());
         if (Objects.nonNull(future)) {
             future.doReceive(respMsg);
         } else {
@@ -222,7 +222,7 @@ public class ResponseFuture implements Future {
         public void run() {
             while (true) {
                 try {
-                    for (ResponseFuture future : FUTURES.values()) {
+                    for (ResponseCommonFuture future : FUTURES.values()) {
                         if (Objects.isNull(future) || future.isDone()) {
                             continue;
                         }

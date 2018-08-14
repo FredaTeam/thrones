@@ -37,4 +37,10 @@ public interface ThronesContext {
      */
     public long getSenquence();
 
+    /**
+     * refresh the service list time will be default 10000ms
+     * @return
+     */
+    public long getRefreshTime();
+
 }

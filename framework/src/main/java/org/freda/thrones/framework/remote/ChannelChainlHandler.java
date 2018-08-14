@@ -3,7 +3,7 @@ package org.freda.thrones.framework.remote;
 /**
  * the action trigger of channel chain
  */
-public interface ChanneChainlHandler {
+public interface ChannelChainlHandler {
 
     /**
      * the moment of connetion

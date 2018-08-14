@@ -12,6 +12,11 @@ import java.net.URL;
 public interface NodePoint extends Closable {
 
     /**
+     * get remote address
+     */
+    InetSocketAddress getRemoteAddress();
+
+    /**
      * get url of this point
      */
     URL getUrl();

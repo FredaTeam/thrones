@@ -5,12 +5,7 @@ import java.net.InetSocketAddress;
 /**
  * A communication between client and server
  */
-public interface ChannelChain {
-
-    /**
-     * get remote address
-     */
-    InetSocketAddress getRemoteAddress();
+public interface ChannelChain extends NodePoint {
 
     /**
      * get local address

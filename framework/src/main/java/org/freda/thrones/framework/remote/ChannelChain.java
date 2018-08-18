@@ -16,4 +16,26 @@ public interface ChannelChain extends NodePoint {
      * connect or not
      */
     boolean isConnected();
+
+    // ============= additional info =============
+
+    /**
+     * has attribute.
+     */
+    boolean hasAttribute(String key);
+
+    /**
+     * get attribute.
+     */
+    Object getAttribute(String key);
+
+    /**
+     * set attribute.
+     */
+    void setAttribute(String key, Object value);
+
+    /**
+     * remove attribute.
+     */
+    void removeAttribute(String key);
 }

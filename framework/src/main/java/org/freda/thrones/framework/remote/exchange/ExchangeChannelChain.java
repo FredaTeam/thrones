@@ -20,9 +20,20 @@ public interface ExchangeChannelChain extends ChannelChain, Closable {
      */
     CommonFuture request(Object request, int timeout) throws LinkingException;
 
+    /**
+     * get message handler
+     */
+    ExchangeHandler getExchangeHandler();
+
+    /**
+     * close channel chain
+     */
     @Override
     void close();
 
+    /**
+     * close channel chain
+     */
     @Override
     void close(int timeout);
 }

@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.coder;
+package org.freda.thrones.framework.netty4;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

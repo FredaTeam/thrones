@@ -1,8 +1,9 @@
 package org.freda.thrones.framework.remote;
 
 
+import org.freda.thrones.framework.common.URL;
+
 import java.net.InetSocketAddress;
-import java.net.URL;
 
 /**
  * points of a linking channel

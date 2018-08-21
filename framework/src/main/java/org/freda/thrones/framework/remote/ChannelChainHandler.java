@@ -3,7 +3,7 @@ package org.freda.thrones.framework.remote;
 /**
  * the action trigger of channel chain
  */
-public interface ChannelChainlHandler {
+public interface ChannelChainHandler {
 
     /**
      * the moment of connetion
@@ -18,7 +18,7 @@ public interface ChannelChainlHandler {
     /**
      * the moment of receiving
      */
-    void onReceived(ChannelChain channelChain);
+    void onReceived(ChannelChain channelChain, Object message);
 
     /**
      * the moment of sending message

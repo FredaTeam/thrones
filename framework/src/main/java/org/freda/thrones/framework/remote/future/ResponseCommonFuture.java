@@ -13,6 +13,7 @@ import org.freda.thrones.framework.remote.ChannelChain;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -25,6 +26,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ResponseCommonFuture implements CommonFuture {
 
     private static final Map<Long, ResponseCommonFuture> FUTURES = Maps.newConcurrentMap();
+
+    private static final Map<Long, ChannelChain> CHANNELCHAINS = Maps.newConcurrentMap();
 
     static {
         Thread compensateTask = new Thread(new TimeoutCallCompensateTask(), "compensateTask");
@@ -52,26 +55,47 @@ public class ResponseCommonFuture implements CommonFuture {
 
     private final Lock lock = new ReentrantLock();
     private final Condition done = lock.newCondition();
+    private volatile long sent;
 
     public ResponseCommonFuture(ChannelChain channelChain, ProcedureReqMsg procedureReqMsg, int timeout) {
         this.channelChain = channelChain;
         this.procedureReqMsg = procedureReqMsg;
-        this.timeout = timeout > 0 ? timeout : Constants.DEFAULT_TIMEOUT;
+        this.timeout = timeout > 0 ? timeout : channelChain.getUrl().getPositiveParam(Constants.PARAMETER.TIME_OUT, Constants.VALUE.DEFAULT_TIMEOUT);
         this.id = procedureReqMsg.getHeader().getSequence();
         FUTURES.put(id, this);
+        CHANNELCHAINS.put(id, channelChain);
     }
 
     public static ResponseCommonFuture getFuture(long id) {
         return FUTURES.get(id);
     }
 
+    public static boolean hasFuture(ChannelChain channelChain) {
+        return CHANNELCHAINS.containsValue(channelChain);
+    }
+
+    public static void sent(ProcedureReqMsg reqMsg) {
+        ResponseCommonFuture future = FUTURES.get(reqMsg.getHeader().getSequence());
+        if (future != null) {
+            future.doSent();
+        }
+    }
+
+    private void doSent() {
+        sent = System.currentTimeMillis();
+    }
+
     // client receive response and notify future to get
-    public static void receiveRespMsg(ProcedureRespMsg respMsg) {
-        ResponseCommonFuture future = FUTURES.remove(respMsg.getHeader().getSequence());
-        if (Objects.nonNull(future)) {
-            future.doReceive(respMsg);
-        } else {
-            log.warn("return response timeout");
+    public static void receiveRespMsg(ChannelChain channelChain, ProcedureRespMsg respMsg) {
+        try {
+            ResponseCommonFuture future = FUTURES.remove(respMsg.getHeader().getSequence());
+            if (Objects.nonNull(future)) {
+                future.doReceive(respMsg);
+            } else {
+                log.warn("return response timeout");
+            }
+        } finally {
+            CHANNELCHAINS.remove(respMsg.getHeader().getSequence());
         }
     }
 
@@ -122,7 +146,7 @@ public class ResponseCommonFuture implements CommonFuture {
 
     @Override
     public Object get(long timeout, TimeUnit unit) throws LinkingException {
-        timeout = timeout >= 0 ? timeout : Constants.DEFAULT_TIMEOUT;
+        timeout = timeout >= 0 ? timeout : Constants.VALUE.DEFAULT_TIMEOUT;
         if (!isDone()) {
             long start = System.currentTimeMillis();
             lock.lock();
@@ -215,6 +239,10 @@ public class ResponseCommonFuture implements CommonFuture {
 
     }
 
+    public ChannelChain getChannelChain() {
+        return channelChain;
+    }
+
     // timeout compensate
     private static class TimeoutCallCompensateTask implements Runnable {
 
@@ -234,7 +262,7 @@ public class ResponseCommonFuture implements CommonFuture {
                                     null,
                                     false
                             );
-                            receiveRespMsg(respMsg);
+                            receiveRespMsg(future.getChannelChain(), respMsg);
                         }
                         TimeUnit.MILLISECONDS.sleep(50);
                     }

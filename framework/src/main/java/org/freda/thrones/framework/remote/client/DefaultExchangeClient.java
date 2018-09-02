@@ -1,12 +1,11 @@
 package org.freda.thrones.framework.remote.client;
 
+import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
-import org.freda.thrones.framework.remote.exchange.ExchangeClient;
 import org.freda.thrones.framework.remote.exchange.ExchangeHandler;
 import org.freda.thrones.framework.remote.future.CommonFuture;
 
 import java.net.InetSocketAddress;
-import java.net.URL;
 
 /**
  * Create on 2018/8/18 14:15

@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.remote.exchange;
+package org.freda.thrones.framework.remote.server;
 
 import org.freda.thrones.framework.remote.server.Server;
 

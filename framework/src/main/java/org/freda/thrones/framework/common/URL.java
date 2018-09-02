@@ -2,6 +2,7 @@ package org.freda.thrones.framework.common;
 
 import com.google.common.collect.Maps;
 import lombok.Data;
+import org.freda.thrones.framework.constants.Constants;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -9,6 +10,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * an detailed address for client to server communication
@@ -49,6 +51,10 @@ public class URL implements Serializable {
      */
     private Map<String, String> params;
 
+    // ==============cache==============
+    private volatile transient Map<String, Number> numbers;
+
+
     public URL(String protocal, String host, int port) {
         this(protocal, null, host, port, null, null);
     }
@@ -76,4 +82,46 @@ public class URL implements Serializable {
         this.path = path;
         this.params = Collections.unmodifiableMap(params == null ? Maps.newHashMap() : params);
     }
+
+    public int getPositiveParam(String key, int defaultValue) {
+        if (defaultValue <= 0) {
+            throw new IllegalArgumentException("defaultValue <= 0");
+        }
+        int value = getParam(key, defaultValue);
+        if (value <= 0) {
+            return defaultValue;
+        }
+        return value;
+    }
+
+    public int getParam(String key, int defaultValue) {
+        Number n = getNumbers().get(key);
+        if (n != null) {
+            return n.intValue();
+        }
+        String value = getParam(key);
+        if (value == null || value.length() == 0) {
+            return defaultValue;
+        }
+        int i = Integer.parseInt(value);
+        getNumbers().put(key, i);
+        return i;
+    }
+
+    public String getParam(String key) {
+        String value = params.get(key);
+        if (value == null || value.length() == 0) {
+            value = params.get(Constants.PARAMETER.DEFAULT_KEY_PREFIX + key);
+        }
+        return value;
+    }
+
+    private Map<String, Number> getNumbers() {
+        if (numbers == null) { // concurrent initialization is tolerant
+            numbers = new ConcurrentHashMap<String, Number>();
+        }
+        return numbers;
+    }
+
+
 }

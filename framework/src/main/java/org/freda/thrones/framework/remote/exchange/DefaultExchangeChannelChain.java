@@ -110,12 +110,12 @@ public class DefaultExchangeChannelChain implements ExchangeChannelChain {
     }
 
     @Override
-    public void send(Object message) {
+    public void send(Object message) throws LinkingException {
         channelChain.send(message, Boolean.FALSE);
     }
 
     @Override
-    public void send(Object message, boolean sent) {
+    public void send(Object message, boolean sent) throws LinkingException {
         if (message instanceof ProcedureReqMsg || message instanceof ProcedureRespMsg) {
             channelChain.send(message, sent);
         } else {

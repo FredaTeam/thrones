@@ -1,6 +1,5 @@
 package org.freda.thrones.framework.manager.proxy;
 
-import org.freda.thrones.framework.constants.Constants;
 import org.freda.thrones.framework.exceptions.RpcException;
 import org.freda.thrones.framework.manager.invoke.Invoker;
 

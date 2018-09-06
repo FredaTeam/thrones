@@ -5,11 +5,8 @@ import lombok.Data;
 import org.freda.thrones.framework.constants.Constants;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.net.InetSocketAddress;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,9 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class URL implements Serializable {
 
     /**
-     * current time use self protocal: "thrones"
+     * current time use self protocol: "thrones"
      */
-    private String protocal;
+    private String protocol;
 
     /**
      * the secret of url which can be empty
@@ -56,24 +53,24 @@ public class URL implements Serializable {
     private volatile transient Map<String, Number> numbers;
 
 
-    public URL(String protocal, String host, int port) {
-        this(protocal, null, host, port, null, null);
+    public URL(String protocol, String host, int port) {
+        this(protocol, null, host, port, null, null);
     }
 
-    public URL(String protocal, String host, int port, String path) {
-        this(protocal, null, host, port, path, null);
+    public URL(String protocol, String host, int port, String path) {
+        this(protocol, null, host, port, path, null);
     }
 
-    public URL(String protocal, String secret, String host, int port) {
-        this(protocal, secret, host, port, null, null);
+    public URL(String protocol, String secret, String host, int port) {
+        this(protocol, secret, host, port, null, null);
     }
 
-    public URL(String protocal, String secret, String host, int port, String path) {
-        this(protocal, secret, host, port, path, null);
+    public URL(String protocol, String secret, String host, int port, String path) {
+        this(protocol, secret, host, port, path, null);
     }
 
-    public URL(String protocal, String secret, String host, int port, String path, Map<String, String> params) {
-        this.protocal = protocal;
+    public URL(String protocol, String secret, String host, int port, String path, Map<String, String> params) {
+        this.protocol = protocol;
         this.secret = secret;
         this.host = host;
         this.port = port < 0 ? 0 : port;
@@ -179,6 +176,15 @@ public class URL implements Serializable {
         return value;
     }
 
+
+    public boolean getParam(String key, boolean defaultValue) {
+        String value = getParam(key);
+        if (value == null || value.length() == 0) {
+            return defaultValue;
+        }
+        return Boolean.parseBoolean(value);
+    }
+
     public String getParam(String key) {
         String value = params.get(key);
         if (value == null || value.length() == 0) {
@@ -192,6 +198,27 @@ public class URL implements Serializable {
             numbers = new ConcurrentHashMap<String, Number>();
         }
         return numbers;
+    }
+
+    public String getAddress() {
+        return port <= 0 ? host : host + ":" + port;
+    }
+
+    public URL setAddress(String address) {
+        int i = address.lastIndexOf(':');
+        String host;
+        int port = this.port;
+        if (i >= 0) {
+            host = address.substring(0, i);
+            port = Integer.parseInt(address.substring(i + 1));
+        } else {
+            host = address;
+        }
+        return new URL(protocol, secret, host, port, path, getParams());
+    }
+
+    public InetSocketAddress toInetSocketAddress() {
+        return new InetSocketAddress(host, port);
     }
 
 

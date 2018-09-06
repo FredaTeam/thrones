@@ -2,6 +2,7 @@ package org.freda.thrones.framework.remote.exchange;
 
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
+import org.freda.thrones.framework.remote.client.DefaultExchangeClient;
 import org.freda.thrones.framework.remote.client.ExchangeClient;
 import org.freda.thrones.framework.remote.server.ExchangeServer;
 
@@ -16,6 +17,6 @@ public class DefaultExchanger implements Exchanger {
 
     @Override
     public ExchangeClient connect(URL url, ExchangeHandler handler) throws LinkingException {
-        return null;
+        return new DefaultExchangeClient();
     }
 }

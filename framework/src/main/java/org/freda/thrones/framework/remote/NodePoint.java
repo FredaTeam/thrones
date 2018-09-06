@@ -2,6 +2,7 @@ package org.freda.thrones.framework.remote;
 
 
 import org.freda.thrones.framework.common.URL;
+import org.freda.thrones.framework.exceptions.LinkingException;
 
 import java.net.InetSocketAddress;
 
@@ -25,12 +26,12 @@ public interface NodePoint extends Closable {
     /**
      * send message
      */
-    void send(Object message);
+    void send(Object message) throws LinkingException;
 
     /**
      * sent or not
      */
-    void send(Object message, boolean sent);
+    void send(Object message, boolean sent) throws LinkingException;
 
     /**
      * reset link connection

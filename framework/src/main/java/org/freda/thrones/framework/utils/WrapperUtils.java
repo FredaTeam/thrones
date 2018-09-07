@@ -1,9 +1,12 @@
 package org.freda.thrones.framework.utils;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,6 +14,9 @@ import java.util.stream.Collectors;
  * Create on 2018/9/7 18:52
  */
 public class WrapperUtils {
+
+    // class cache
+    private static final Map<Class<?>, Object> CLASS_MAP = Maps.newConcurrentMap();
 
     /**
      * create instance by given interface
@@ -24,14 +30,25 @@ public class WrapperUtils {
         if (interfaceClazz == null) {
             throw new RuntimeException(clazz.getSimpleName() + "has no interface");
         }
-        T instance = (T) clazz.newInstance();
-        Set<Class<?>> wrapperClasses = laodClass(interfaceClazz);
-        if (wrapperClasses != null && !wrapperClasses.isEmpty()) {
-            for (Class<?> wrapperClass : wrapperClasses) {
-                instance = (T) wrapperClass.getConstructor(interfaceClazz).newInstance(instance);
+
+        T cacheInstance = (T) CLASS_MAP.get(clazz);
+        if (Objects.isNull(cacheInstance)) {
+
+            cacheInstance = (T) clazz.newInstance();
+
+            Set<Class<?>> wrapperClasses = laodClass(interfaceClazz);
+
+            if (wrapperClasses != null && !wrapperClasses.isEmpty()) {
+                for (Class<?> wrapperClass : wrapperClasses) {
+                    cacheInstance = (T) wrapperClass.getConstructor(interfaceClazz).newInstance(cacheInstance);
+                }
             }
+
+            CLASS_MAP.put(clazz, cacheInstance);
+
         }
-        return instance;
+
+        return cacheInstance;
     }
 
 

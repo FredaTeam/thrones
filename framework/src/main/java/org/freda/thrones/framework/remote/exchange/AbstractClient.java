@@ -81,6 +81,28 @@ public abstract class AbstractClient extends AbstractNode implements Client {
         }
     }
 
+    private void disconnect() {
+        CONNECT_LOCK.lock();
+        try {
+            stopReconnectTask();
+            try {
+                ChannelChain channelChain = getChannelChain();
+                if (channelChain != null) {
+                    channelChain.close();
+                }
+            } catch (Throwable e) {
+                log.warn(e.getMessage(), e);
+            }
+            try {
+                doDisConnect();
+            } catch (Throwable e) {
+                log.warn(e.getMessage(), e);
+            }
+        } finally {
+            CONNECT_LOCK.unlock();
+        }
+    }
+
     // reconnect task
     private void initReconnectTask() {
         int reconnectCount = getReconnectParam(getUrl());
@@ -191,7 +213,7 @@ public abstract class AbstractClient extends AbstractNode implements Client {
             return getUrl().toInetSocketAddress();
 
         }
-        return channelChain.getRemoteAddress();
+        return channelChain.getLocalAddress();
     }
 
     @Override
@@ -218,12 +240,36 @@ public abstract class AbstractClient extends AbstractNode implements Client {
 
     @Override
     public void close() {
-
+        try {
+            super.close();
+        } catch (Throwable e) {
+            log.warn(e.getMessage(), e);
+        }
+        try {
+            disconnect();
+        } catch (Throwable e) {
+            log.warn(e.getMessage(), e);
+        }
+        try {
+            doClose();
+        } catch (Throwable e) {
+            log.warn(e.getMessage(), e);
+        }
     }
 
     @Override
     public void reconnect() throws LinkingException {
-
+        if (!isConnected()) {
+            CONNECT_LOCK.lock();
+            try {
+                if (!isConnected()) {
+                    disconnect();
+                    connect();
+                }
+            } finally {
+                CONNECT_LOCK.unlock();
+            }
+        }
     }
 
     /**

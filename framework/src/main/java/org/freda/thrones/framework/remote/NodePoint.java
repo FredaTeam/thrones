@@ -16,7 +16,7 @@ public interface NodePoint extends Closable {
     /**
      * get remote address
      */
-    InetSocketAddress getRemoteAddress();
+    InetSocketAddress getLocalAddress();
 
     /**
      * get url of this point

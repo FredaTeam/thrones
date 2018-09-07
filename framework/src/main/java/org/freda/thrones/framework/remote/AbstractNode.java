@@ -40,51 +40,71 @@ public abstract class AbstractNode implements NodePoint, ChannelChainHandler {
 
     @Override
     public void onConnected(ChannelChain channelChain) {
-
+        if (closed) {
+            return;
+        }
+        handler.onConnected(channelChain);
     }
 
     @Override
     public void onDisConnected(ChannelChain channelChain) {
-
+        handler.onDisConnected(channelChain);
     }
 
     @Override
     public void onReceived(ChannelChain channelChain, Object message) {
-
+        if (closed) {
+            return;
+        }
+        handler.onReceived(channelChain, message);
     }
 
     @Override
     public void onSent(ChannelChain channelChain, Object message) {
-
+        if (closed) {
+            return;
+        }
+        handler.onSent(channelChain, message);
     }
 
     @Override
     public void onError(ChannelChain channelChain, Throwable throwable) {
-
+        handler.onError(channelChain, throwable);
     }
 
     @Override
     public URL getUrl() {
-        return null;
+        return url;
+    }
+
+    protected void setUrl(URL url) {
+        this.url = url;
     }
 
     @Override
     public void close() {
-
+        closed = true;
     }
 
     @Override
     public void close(int timeout) {
-
+        close();
     }
 
     @Override
     public void closing() {
-
+        if (closed) {
+            return;
+        }
+        closing = true;
     }
 
     @Override
     public boolean closed() {
-        return false;
+        return closed;
+    }
+
+    public boolean isClosing() {
+        return closing && !closed;
     }
 }

@@ -17,6 +17,6 @@ public class DefaultExchanger implements Exchanger {
 
     @Override
     public ExchangeClient connect(URL url, ExchangeHandler handler) throws LinkingException {
-        return new DefaultExchangeClient();
+        return null;
     }
 }

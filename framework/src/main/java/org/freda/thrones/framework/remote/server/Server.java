@@ -16,7 +16,7 @@ public interface Server extends NodePoint {
     /**
      * get all channels
      */
-    Collection<ChannelChain> getChannels();
+    Collection<ChannelChain> getChannelChains();
 
     /**
      * get channelChain by ip:port

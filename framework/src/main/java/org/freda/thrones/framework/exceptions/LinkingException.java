@@ -18,7 +18,7 @@ public class LinkingException extends Exception {
     public LinkingException(ChannelChain channelChain, String message) {
         this(
                 Objects.isNull(channelChain) ? null : channelChain.getLocalAddress(),
-                Objects.isNull(channelChain) ? null : channelChain.getRemoteAddress(),
+                Objects.isNull(channelChain) ? null : channelChain.getLocalAddress(),
                 message
         );
     }
@@ -32,7 +32,7 @@ public class LinkingException extends Exception {
     public LinkingException(ChannelChain channelChain, Throwable cause) {
         this(
                 Objects.isNull(channelChain) ? null : channelChain.getLocalAddress(),
-                Objects.isNull(channelChain) ? null : channelChain.getRemoteAddress(),
+                Objects.isNull(channelChain) ? null : channelChain.getLocalAddress(),
                 cause
         );
     }
@@ -46,7 +46,7 @@ public class LinkingException extends Exception {
     public LinkingException(ChannelChain channelChain, String message, Throwable cause) {
         this(
                 Objects.isNull(channelChain) ? null : channelChain.getLocalAddress(),
-                Objects.isNull(channelChain) ? null : channelChain.getRemoteAddress(),
+                Objects.isNull(channelChain) ? null : channelChain.getLocalAddress(),
                 message,
                 cause
         );

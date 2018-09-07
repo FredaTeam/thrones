@@ -143,6 +143,38 @@ public class URL implements Serializable {
         return new URL(protocol, secret, host, port, path, parameters);
     }
 
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    public URL addParam(Map<String, String> parameters) {
+        if (parameters.size() == 0) {
+            return this;
+        }
+
+        boolean hasAndEqual = true;
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String value = getParams().get(entry.getKey());
+            if (value == null) {
+                if (entry.getValue() != null) {
+                    hasAndEqual = false;
+                    break;
+                }
+            } else {
+                if (!value.equals(entry.getValue())) {
+                    hasAndEqual = false;
+                    break;
+                }
+            }
+        }
+        if (hasAndEqual){
+            return this;
+        }
+        Map<String, String> map = Maps.newHashMap(getParams());
+        map.putAll(parameters);
+        return new URL(protocol, secret, host, port, path, map);
+    }
+
     public int getPositiveParam(String key, int defaultValue) {
         if (defaultValue <= 0) {
             throw new IllegalArgumentException("defaultValue <= 0");

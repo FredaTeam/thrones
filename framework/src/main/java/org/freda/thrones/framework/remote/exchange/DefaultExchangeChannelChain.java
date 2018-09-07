@@ -101,7 +101,7 @@ public class DefaultExchangeChannelChain implements ExchangeChannelChain {
 
     @Override
     public InetSocketAddress getRemoteAddress() {
-        return channelChain.getRemoteAddress();
+        return channelChain.getLocalAddress();
     }
 
     @Override

@@ -18,8 +18,6 @@ import org.freda.thrones.framework.remote.exchange.AbstractClient;
 @Slf4j
 public class Netty4Client extends AbstractClient {
 
-
-
     private static final NioEventLoopGroup nioEventLoopGroup = new NioEventLoopGroup(Constants.VALUE.DEFAULT_IO_THREADS, new DefaultThreadFactory("NettyClientWorker", true));
 
     private Bootstrap bootstrap;

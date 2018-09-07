@@ -136,11 +136,11 @@ public class Netty4ChannelChain extends AbstractChannelChain {
                 throw cause;
             }
         } catch (Throwable e) {
-            //throw new RemotingException(this, "Failed to send message " + message + " to " + getRemoteAddress() + ", cause: " + e.getMessage(), e);
+            //throw new RemotingException(this, "Failed to send message " + message + " to " + getLocalAddress() + ", cause: " + e.getMessage(), e);
         }
 
         if (!success) {
-            //throw new RemotingException(this, "Failed to send message " + message + " to " + getRemoteAddress()
+            //throw new RemotingException(this, "Failed to send message " + message + " to " + getLocalAddress()
             //        + "in timeout(" + timeout + "ms) limit");
         }
     }

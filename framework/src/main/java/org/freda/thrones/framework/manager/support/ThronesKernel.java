@@ -8,15 +8,19 @@ import org.freda.thrones.framework.exceptions.RpcException;
 import org.freda.thrones.framework.manager.export.Exporter;
 import org.freda.thrones.framework.manager.export.ThronesExporter;
 import org.freda.thrones.framework.manager.invoke.Invoker;
+import org.freda.thrones.framework.manager.invoke.ThronesInvoker;
 import org.freda.thrones.framework.remote.ChannelChain;
+import org.freda.thrones.framework.remote.client.ExchangeClient;
 import org.freda.thrones.framework.remote.exchange.AbstractExchangeHandler;
 import org.freda.thrones.framework.remote.exchange.ExchangeChannelChain;
 import org.freda.thrones.framework.remote.exchange.ExchangeHandler;
+import org.freda.thrones.framework.remote.exchange.ExchangerKernel;
 import org.freda.thrones.framework.remote.server.ExchangeServer;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Create on 2018/9/3 15:51
@@ -25,6 +29,10 @@ public class ThronesKernel extends AbstractKernel {
 
     // <host:port,Exchanger>
     private final Map<String, ExchangeServer> serverMap = Maps.newConcurrentMap();
+
+    private final Map<String, ExchangeClient> clientMap = Maps.newConcurrentMap();
+
+    private final ConcurrentMap<String, Object> locks = Maps.newConcurrentMap();
 
     private ExchangeHandler thronesHandler = new AbstractExchangeHandler() {
 
@@ -91,20 +99,62 @@ public class ThronesKernel extends AbstractKernel {
     }
 
     private ExchangeServer createServer(URL url) {
-
-        ExchangeServer server = null;
-
-        return server;
+        try {
+            return ExchangerKernel.bind(url, thronesHandler);
+        } catch (LinkingException e) {
+            throw new RpcException("Fail to start server(url: " + url + ") " + e.getMessage(), e);
+        }
     }
 
 
     @Override
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
-        return null;
+        ThronesInvoker<T> invoker = new ThronesInvoker<T>(type, url, getClients(url), invokers);
+        invokers.add(invoker);
+        return invoker;
+    }
+
+    private ExchangeClient[] getClients(URL url) {
+        String key = url.getAddress();
+        ExchangeClient client = clientMap.get(key);
+        if (Objects.nonNull(client)) {
+            if (!client.closed()) {
+                return new ExchangeClient[]{client};
+            } else {
+                clientMap.remove(key);
+            }
+        }
+        locks.putIfAbsent(key, new Object());
+        synchronized (locks.get(key)) {
+            client = initClient(url);
+            clientMap.put(key, client);
+            locks.remove(key);
+        }
+        return new ExchangeClient[]{client};
+    }
+
+    private ExchangeClient initClient(URL url) {
+        try {
+            return ExchangerKernel.connect(url, thronesHandler);
+        } catch (LinkingException e) {
+            throw new RpcException("Fail to create remoting client for service(" + url + "): " + e.getMessage(), e);
+        }
+
     }
 
     @Override
     public void destroy() {
-
+        for (String key : serverMap.keySet()) {
+            ExchangeServer server = serverMap.remove(key);
+            if (Objects.nonNull(server)) {
+                server.close();
+            }
+        }
+        for (String key : clientMap.keySet()) {
+            ExchangeClient client = clientMap.remove(key);
+            if (Objects.nonNull(client)) {
+                client.close();
+            }
+        }
     }
 }

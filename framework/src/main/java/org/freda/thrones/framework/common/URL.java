@@ -76,4 +76,12 @@ public class URL implements Serializable {
         this.path = path;
         this.params = Collections.unmodifiableMap(params == null ? Maps.newHashMap() : params);
     }
+
+    @Override
+    public String toString() {
+        return "URL{" +
+                "host='" + host + '\'' +
+                ", port=" + port +
+                '}';
+    }
 }

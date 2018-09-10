@@ -1,6 +1,7 @@
 package org.freda.thrones.framework.remote.exchange;
 
 import org.freda.thrones.framework.common.URL;
+import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.remote.ChannelChainHandler;
 
@@ -65,7 +66,7 @@ public abstract class AbstractChannelChain implements ChannelChain {
     }
 
     @Override
-    public void send(Object message) {
+    public void send(Object message) throws LinkingException {
         //TODO what is sent ?
         send(message, false);
     }

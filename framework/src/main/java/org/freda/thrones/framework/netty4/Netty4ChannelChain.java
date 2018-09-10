@@ -3,6 +3,7 @@ package org.freda.thrones.framework.netty4;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import org.freda.thrones.framework.common.URL;
+import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChainHandler;
 import org.freda.thrones.framework.remote.exchange.AbstractChannelChain;
 
@@ -122,9 +123,9 @@ public class Netty4ChannelChain extends AbstractChannelChain {
     }
 
     @Override
-    public void send(Object message, boolean sent) {
+    public void send(Object message, boolean sent) throws LinkingException{
         boolean success = true;
-        int timeout = 0;
+        int timeout = 5000;
         try {
             ChannelFuture future = channel.writeAndFlush(message);
             if (sent) {
@@ -136,12 +137,13 @@ public class Netty4ChannelChain extends AbstractChannelChain {
                 throw cause;
             }
         } catch (Throwable e) {
-            //throw new RemotingException(this, "Failed to send message " + message + " to " + getRemoteAddress() + ", cause: " + e.getMessage(), e);
+
+            throw new LinkingException(this, "Failed to send message " + message + " to " + getRemoteAddress() + ", cause: " + e.getMessage(), e);
         }
 
         if (!success) {
-            //throw new RemotingException(this, "Failed to send message " + message + " to " + getRemoteAddress()
-            //        + "in timeout(" + timeout + "ms) limit");
+            throw new LinkingException(this, "Failed to send message " + message + " to " + getRemoteAddress()
+                    + "in timeout(" + timeout + "ms) limit");
         }
     }
 

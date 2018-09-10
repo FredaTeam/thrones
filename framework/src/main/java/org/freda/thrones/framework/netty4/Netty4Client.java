@@ -1,13 +1,22 @@
 package org.freda.thrones.framework.netty4;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.freda.thrones.framework.constants.Constants;
+import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.remote.exchange.AbstractClient;
+
+import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Client for Netty4.
@@ -24,25 +33,83 @@ public abstract class Netty4Client extends AbstractClient {
     @Override
     protected void doOen() throws Throwable {
 
+        //TODO channelChainHandler
+        final Netty4ClientHandler clientHandler = new Netty4ClientHandler(getUrl(), null);
+
+        bootstrap = new Bootstrap();
+        bootstrap.group(nioEventLoopGroup)
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                //.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, getTimeout())
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
+                .channel(NioSocketChannel.class);
+
+        bootstrap.handler(new ChannelInitializer(){
+
+            @Override
+            protected void initChannel(Channel ch) throws Exception {
+                ch.pipeline()
+                        .addLast("coder", new MsgCoder())
+                        .addLast("", clientHandler);
+            }
+        });
     }
 
     @Override
     protected void doClose() throws Throwable {
 
+        //empty
     }
 
     @Override
     protected void doConnect() throws Throwable {
+        long start = System.currentTimeMillis();
+        ChannelFuture future = bootstrap.connect(new InetSocketAddress(getUrl().getHost(), getUrl().getPort()));
+
+        boolean ret = future.awaitUninterruptibly(Constants.DEFAULT_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
+
+        if (ret && future.isSuccess()) {
+            Channel newChannel = future.channel();
+            try {
+                Channel oldChannel = Netty4Client.this.channel;
+                try {
+                    if (oldChannel != null) {
+                        oldChannel.close();
+                    }
+                } finally {
+                    Netty4ChannelChain.removeChannelIfDisconnected(oldChannel);
+                }
+
+            } finally {
+                if (Netty4Client.this.closed()) {
+                    try {
+                        newChannel.close();
+                    } finally {
+                        Netty4Client.this.channel = null;
+                        Netty4ChannelChain.removeChannelIfDisconnected(newChannel);
+                    }
+                }
+            }
+        } else {
+            throw new LinkingException(this, "can not connect to server. url : " + getUrl(), future.cause());
+        }
+
 
     }
 
     @Override
     protected void doDisConnect() throws Throwable {
 
+        Netty4ChannelChain.removeChannelIfDisconnected(channel);
     }
 
     @Override
     protected ChannelChain getChannelChain() {
-        return null;
+
+        if (channel == null || !channel.isActive()) {
+            return null;
+        }
+        return Netty4ChannelChain.getOrAddChannel(channel, getUrl(), null);
     }
 }

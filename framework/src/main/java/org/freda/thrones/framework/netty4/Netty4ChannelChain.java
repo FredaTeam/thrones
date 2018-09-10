@@ -145,7 +145,7 @@ public class Netty4ChannelChain extends AbstractChannelChain {
                     + "in timeout(" + timeout + "ms) limit");
         }
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

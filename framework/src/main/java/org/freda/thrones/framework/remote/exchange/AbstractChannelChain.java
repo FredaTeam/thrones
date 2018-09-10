@@ -3,7 +3,7 @@ package org.freda.thrones.framework.remote.exchange;
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
-import org.freda.thrones.framework.remote.ChannelChainHandler;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 
 public abstract class AbstractChannelChain implements ChannelChain {
 
@@ -17,9 +17,9 @@ public abstract class AbstractChannelChain implements ChannelChain {
     private volatile boolean closed;
 
 
-    public AbstractChannelChain(URL url, ChannelChainHandler handler){
+    public AbstractChannelChain(URL url, ChannelChainHandler handler) {
 
-        if (url == null || handler == null){
+        if (url == null || handler == null) {
             throw new IllegalArgumentException("url or channelChainHandler can not be null.");
         }
         this.url = url;
@@ -47,7 +47,7 @@ public abstract class AbstractChannelChain implements ChannelChain {
 
     @Override
     public void closing() {
-        if (!this.closed){
+        if (!this.closed) {
             this.closing = true;
         }
     }

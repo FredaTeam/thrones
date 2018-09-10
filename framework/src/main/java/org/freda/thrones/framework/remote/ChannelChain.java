@@ -10,7 +10,7 @@ public interface ChannelChain extends NodePoint {
     /**
      * get local address
      */
-    InetSocketAddress getLocalAddress();
+    InetSocketAddress getRemoteAddress();
 
     /**
      * connect or not

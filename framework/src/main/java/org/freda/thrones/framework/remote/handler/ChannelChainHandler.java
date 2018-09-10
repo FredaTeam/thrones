@@ -1,4 +1,6 @@
-package org.freda.thrones.framework.remote;
+package org.freda.thrones.framework.remote.handler;
+
+import org.freda.thrones.framework.remote.ChannelChain;
 
 /**
  * the action trigger of channel chain

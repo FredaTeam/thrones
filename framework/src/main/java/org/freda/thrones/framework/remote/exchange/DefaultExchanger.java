@@ -2,6 +2,9 @@ package org.freda.thrones.framework.remote.exchange;
 
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
+import org.freda.thrones.framework.remote.client.DefaultExchangeClient;
+import org.freda.thrones.framework.remote.client.ExchangeClient;
+import org.freda.thrones.framework.remote.server.ExchangeServer;
 
 /**
  * the implement class of exchanger

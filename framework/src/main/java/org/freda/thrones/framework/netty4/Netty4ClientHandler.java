@@ -8,7 +8,7 @@ import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.enums.MsgStatusEnum;
 import org.freda.thrones.framework.msg.ProcedureReqMsg;
 import org.freda.thrones.framework.msg.ProcedureRespMsg;
-import org.freda.thrones.framework.remote.ChannelChainHandler;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 
 @ChannelHandler.Sharable
 public class Netty4ClientHandler extends ChannelDuplexHandler {

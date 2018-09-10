@@ -1,5 +1,7 @@
 package org.freda.thrones.framework.utils;
 
+import org.freda.thrones.framework.utils.DemoService;
+
 /**
  * Create on 2018/9/7 17:04
  */

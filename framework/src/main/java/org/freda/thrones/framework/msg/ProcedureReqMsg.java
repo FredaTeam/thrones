@@ -14,6 +14,9 @@ public class ProcedureReqMsg extends BaseMsg {
     public ProcedureReqMsg() {
     }
 
+    // encapsulation of methodname args argTypes
+    private Object request;
+
     /**
      * 接口class 如 org.freda.api.xxxItf
      */
@@ -141,5 +144,13 @@ public class ProcedureReqMsg extends BaseMsg {
     public void setArgs(Object[] args)
     {
         this.args = args;
+    }
+
+    public Object getRequest() {
+        return request;
+    }
+
+    public void setRequest(Object request) {
+        this.request = request;
     }
 }

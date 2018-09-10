@@ -3,9 +3,9 @@ package org.freda.thrones.framework.remote.transport;
 import com.google.common.base.Preconditions;
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
-import org.freda.thrones.framework.remote.ChannelChainHandler;
-import org.freda.thrones.framework.remote.ChannelChainHandlerAdapter;
-import org.freda.thrones.framework.remote.ChannelChainHandlerDispatcher;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandlerAdapter;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandlerDispatcher;
 import org.freda.thrones.framework.remote.client.Client;
 import org.freda.thrones.framework.remote.server.Server;
 

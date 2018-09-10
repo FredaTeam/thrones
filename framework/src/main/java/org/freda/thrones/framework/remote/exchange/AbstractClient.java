@@ -6,7 +6,7 @@ import org.freda.thrones.framework.constants.Constants;
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.AbstractNode;
 import org.freda.thrones.framework.remote.ChannelChain;
-import org.freda.thrones.framework.remote.ChannelChainHandler;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 import org.freda.thrones.framework.remote.ThronesThreadFactory;
 import org.freda.thrones.framework.remote.client.Client;
 import org.freda.thrones.framework.utils.NetUtils;

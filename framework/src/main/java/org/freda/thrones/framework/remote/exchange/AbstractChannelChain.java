@@ -3,7 +3,7 @@ package org.freda.thrones.framework.remote.exchange;
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
-import org.freda.thrones.framework.remote.ChannelChainHandler;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 
 public abstract class AbstractChannelChain implements ChannelChain {
 

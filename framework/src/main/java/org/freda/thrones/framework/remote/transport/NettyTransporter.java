@@ -2,7 +2,7 @@ package org.freda.thrones.framework.remote.transport;
 
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
-import org.freda.thrones.framework.remote.ChannelChainHandler;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 import org.freda.thrones.framework.remote.client.Client;
 import org.freda.thrones.framework.remote.server.Server;
 

@@ -3,7 +3,7 @@ package org.freda.thrones.framework.netty4;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import org.freda.thrones.framework.common.URL;
-import org.freda.thrones.framework.remote.ChannelChainHandler;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 import org.freda.thrones.framework.remote.exchange.AbstractChannelChain;
 
 import java.net.InetSocketAddress;

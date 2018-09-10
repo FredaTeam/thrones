@@ -28,7 +28,6 @@ public class DefaultExchangeClient implements ExchangeClient {
         }
     }
 
-
     private void startHeartBeatTask() {
 
     }

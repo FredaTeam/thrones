@@ -3,7 +3,7 @@ package org.freda.thrones.framework.utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,10 +22,10 @@ public class WrapperUtils {
      * create instance by given interface
      * use decorator patten to new instance
      * <p>
-     * without order
+     * with order
      */
     @SuppressWarnings("unchecked")
-    public static <T> T createInstance(Class<?> clazz) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+    public static <T> T createInstance(Class<?> clazz, List<String> packagePaths) throws Throwable {
         Class<?> interfaceClazz = clazz.getInterfaces()[0];
         if (interfaceClazz == null) {
             throw new RuntimeException(clazz.getSimpleName() + "has no interface");
@@ -36,9 +36,16 @@ public class WrapperUtils {
 
             cacheInstance = (T) clazz.newInstance();
 
-            Set<Class<?>> wrapperClasses = laodClass(interfaceClazz);
+            Set<Class<?>> wrapperClasses = laodClass(interfaceClazz, packagePaths);
 
             if (wrapperClasses != null && !wrapperClasses.isEmpty()) {
+
+                wrapperClasses = wrapperClasses.stream().sorted(
+                        Comparator.comparing(index ->
+                                index.getAnnotation(Order.class) == null ?
+                                        Integer.MIN_VALUE : index.getAnnotation(Order.class).value())
+                ).collect(Collectors.toSet());
+
                 for (Class<?> wrapperClass : wrapperClasses) {
                     cacheInstance = (T) wrapperClass.getConstructor(interfaceClazz).newInstance(cacheInstance);
                 }
@@ -52,8 +59,8 @@ public class WrapperUtils {
     }
 
 
-    private static Set<Class<?>> laodClass(Class<?> interfaceClazz) {
-        List<Class<?>> classes = ClassUtils.getClassesByInterface(interfaceClazz, Lists.newArrayList());
+    private static Set<Class<?>> laodClass(Class<?> interfaceClazz, List<String> packagePaths) {
+        List<Class<?>> classes = ClassUtils.getClassesByInterface(interfaceClazz, packagePaths);
         return classes.stream().filter(it -> isWrapperClass(it, interfaceClazz)).collect(Collectors.toSet());
     }
 

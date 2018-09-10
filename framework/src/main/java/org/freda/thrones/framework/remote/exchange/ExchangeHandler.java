@@ -1,7 +1,7 @@
 package org.freda.thrones.framework.remote.exchange;
 
 import org.freda.thrones.framework.exceptions.LinkingException;
-import org.freda.thrones.framework.remote.ChannelChainHandler;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 
 import java.util.concurrent.CompletableFuture;
 

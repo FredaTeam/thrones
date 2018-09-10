@@ -1,6 +1,7 @@
-package org.freda.thrones.framework.remote;
+package org.freda.thrones.framework.remote.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.freda.thrones.framework.remote.ChannelChain;
 
 import java.util.Arrays;
 import java.util.Collection;

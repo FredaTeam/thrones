@@ -3,6 +3,7 @@ package org.freda.thrones.framework.remote;
 import com.google.common.base.Preconditions;
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.constants.Constants;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 
 import java.util.Objects;
 

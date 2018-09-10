@@ -5,7 +5,7 @@ import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.AbstractNode;
 import org.freda.thrones.framework.remote.ChannelChain;
-import org.freda.thrones.framework.remote.ChannelChainHandler;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;

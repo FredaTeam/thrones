@@ -2,11 +2,13 @@ package org.freda.thrones.framework.remote.exchange;
 
 import lombok.extern.slf4j.Slf4j;
 import org.freda.thrones.framework.common.URL;
+import org.freda.thrones.framework.constants.Constants;
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.msg.ProcedureReqMsg;
 import org.freda.thrones.framework.msg.ProcedureRespMsg;
 import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.remote.future.CommonFuture;
+import org.freda.thrones.framework.remote.future.ResponseCommonFuture;
 
 import java.net.InetSocketAddress;
 import java.util.Objects;
@@ -19,6 +21,8 @@ public class DefaultExchangeChannelChain implements ExchangeChannelChain {
 
     private final ChannelChain channelChain;
 
+    private static final String CHANNEL_KEY = DefaultExchangeChannelChain.class.getName() + ".CHANNEL";
+
     private volatile boolean closed = false;
 
     public DefaultExchangeChannelChain(ChannelChain channelChain) {
@@ -28,14 +32,48 @@ public class DefaultExchangeChannelChain implements ExchangeChannelChain {
         this.channelChain = channelChain;
     }
 
+
+    public static DefaultExchangeChannelChain getOrAddChannel(ChannelChain channelChain) {
+        if (channelChain == null) {
+            return null;
+        }
+        DefaultExchangeChannelChain exchangeChannelChain = (DefaultExchangeChannelChain) channelChain.getAttribute(CHANNEL_KEY);
+        if (exchangeChannelChain == null) {
+            exchangeChannelChain = new DefaultExchangeChannelChain(channelChain);
+            if (channelChain.isConnected()) {
+                channelChain.setAttribute(CHANNEL_KEY, exchangeChannelChain);
+            }
+        }
+        return exchangeChannelChain;
+    }
+
+    public static void removeChannelIfDisconnected(ChannelChain channelChain) {
+        if (channelChain != null && !channelChain.isConnected()) {
+            channelChain.removeAttribute(CHANNEL_KEY);
+        }
+    }
+
     @Override
     public CommonFuture request(Object request) throws LinkingException {
-        return null;
+        return request(request, channelChain.getUrl().getPositiveParam(Constants.PARAMETER.TIMEOUT_KEY, Constants.VALUE.DEFAULT_TIMEOUT));
     }
 
     @Override
     public CommonFuture request(Object request, int timeout) throws LinkingException {
-        return null;
+        if (closed) {
+            throw new LinkingException(this.getLocalAddress(), null, "Failed to send request " + request + ", cause: The channelChain " + this + " is closed!");
+        }
+        // create request.
+        ProcedureReqMsg reqMsg = new ProcedureReqMsg();
+        reqMsg.setRequest(request);
+        ResponseCommonFuture future = new ResponseCommonFuture(channelChain, reqMsg, timeout);
+        try {
+            channelChain.send(reqMsg);
+        } catch (LinkingException e) {
+            future.cancel();
+            throw e;
+        }
+        return future;
     }
 
     @Override
@@ -57,6 +95,19 @@ public class DefaultExchangeChannelChain implements ExchangeChannelChain {
         if (closed) {
             return;
         }
+        closed = true;
+        if (timeout > 0) {
+            long start = System.currentTimeMillis();
+            while (ResponseCommonFuture.hasFuture(channelChain)
+                    && System.currentTimeMillis() - start < timeout) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    log.warn(e.getMessage(), e);
+                }
+            }
+        }
+        close();
     }
 
     @Override

@@ -1,25 +1,25 @@
 
-# Fnction&Module List
+# Function&Module List
 
 | Module(function)                        |    status     |  author   | comment |
 |                :----:                   |    :----:     |  :----:   | :----:  |
-| [netty transport](#Transport Layer)                         |    doing      |   Rally   |    -    |
-| [encode&decode handler](#Encode&Decode)                   |    doing      |   Rally   |    -    |
-| [exchange handler](#Exhange Layer)                      |    doing      |  Michael  |    -    |
-| [heartbeat task](#HeartBeat)                           |    doing      |  Michael  |    -    |
-| [export&refer service](#ServiceKernel)                     |    doing      |  Michael  |    -    |
-| [registry (consul)](#Registry Layer)                   |    doing      |  Michael  |    -    |
-| [trace filter](#Trace)                             |    pending    |     -     |    -    |
-| [cluster](#Cluster)                                  |    pending    |     -     |    -    |
-| [monitor](#Monitor)                                  |    pending    |     -     |    -    |
-| [annotation for regisring service](#Import Annotation)               |    pending    |     -     |    -    |
-| [integrate with spring](#Integerate With Spring)                    |    pending    |     -     |    -    |
-| [circuit-breaker&limit by hystrix](#Hystrix)         |    pending    |     -     |    -    |
+| [Transport Layer](#transport-layer)                         |    doing      |   Rally   |    -    |
+| [Encode&Decode](#encode-decode)                   |    doing      |   Rally   |    -    |
+| [Exhange Layer](#exhange-layer)                      |    doing      |  Michael  |    -    |
+| [HeartBeat](#heartbeat)                           |    doing      |  Michael  |    -    |
+| [ServiceKernel](#servicekernel)                     |    doing      |  Michael  |    -    |
+| [Registry Layer](#registry-layer)                   |    doing      |  Michael  |    -    |
+| [Trace](#trace)                             |    pending    |     -     |    -    |
+| [Cluster](#cluster)                                  |    pending    |     -     |    -    |
+| [Monitor](#monitor)                                  |    pending    |     -     |    -    |
+| [Import Annotation](#import-annotation)               |    pending    |     -     |    -    |
+| [Integerate With Spring](#integerate-with-spring)                    |    pending    |     -     |    -    |
+| [Hystrix](#hystrix)         |    pending    |     -     |    -    |
 
 # Transport Layer
 
 
-# Encode&Decode
+# Encode Decode
 
 
 # Exhange Layer
@@ -38,7 +38,6 @@
 
 
 # Cluster
-
 
 
 # Monitor

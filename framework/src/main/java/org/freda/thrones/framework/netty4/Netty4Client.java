@@ -16,6 +16,7 @@ import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 import org.freda.thrones.framework.remote.exchange.AbstractClient;
+import org.freda.thrones.framework.remote.handler.HandlerKernel;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
@@ -33,25 +34,23 @@ public class Netty4Client extends AbstractClient {
     private volatile Channel channel;
 
     public Netty4Client(URL url, ChannelChainHandler handler) throws LinkingException {
-        super(url, handler);
+        super(url, HandlerKernel.wrap(handler, url));
     }
 
     @Override
     protected void doOen() throws Throwable {
 
-        //TODO channelChainHandler
-        final Netty4ClientHandler clientHandler = new Netty4ClientHandler(getUrl(), null);
+        final Netty4ClientHandler clientHandler = new Netty4ClientHandler(getUrl(), this);
 
         bootstrap = new Bootstrap();
         bootstrap.group(nioEventLoopGroup)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
-                //.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, getTimeout())
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
                 .channel(NioSocketChannel.class);
 
-        bootstrap.handler(new ChannelInitializer(){
+        bootstrap.handler(new ChannelInitializer() {
 
             @Override
             protected void initChannel(Channel ch) throws Exception {

@@ -2,10 +2,12 @@ package org.freda.thrones.framework.netty4;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import lombok.extern.slf4j.Slf4j;
 import org.freda.thrones.framework.common.URL;
+import org.freda.thrones.framework.constants.Constants;
 import org.freda.thrones.framework.exceptions.LinkingException;
-import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 import org.freda.thrones.framework.remote.exchange.AbstractChannelChain;
+import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -13,6 +15,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@Slf4j
 public class Netty4ChannelChain extends AbstractChannelChain {
 
     private static final ConcurrentMap<Channel, Netty4ChannelChain> channelMap = new ConcurrentHashMap<>();
@@ -21,11 +24,10 @@ public class Netty4ChannelChain extends AbstractChannelChain {
 
     private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
-
-    private Netty4ChannelChain(Channel channel, URL url, ChannelChainHandler handler){
+    private Netty4ChannelChain(Channel channel, URL url, ChannelChainHandler handler) {
         super(url, handler);
 
-        if (channel == null){
+        if (channel == null) {
             throw new IllegalArgumentException("netty channel == null;");
         }
         this.channel = channel;
@@ -36,24 +38,24 @@ public class Netty4ChannelChain extends AbstractChannelChain {
      * return this. in MAP
      *
      * @param channel netty channel
-     * @param url URL
+     * @param url     URL
      * @param handler handler
      * @return this
      */
-    static Netty4ChannelChain getOrAddChannel(Channel channel, URL url, ChannelChainHandler handler){
+    static Netty4ChannelChain getOrAddChannel(Channel channel, URL url, ChannelChainHandler handler) {
 
-        if (channel == null){
+        if (channel == null) {
             return null;
         }
         Netty4ChannelChain chain = channelMap.get(channel);
-        if (chain == null){
+        if (chain == null) {
 
             Netty4ChannelChain netty4ChannelChain = new Netty4ChannelChain(channel, url, handler);
 
-            if (channel.isActive()){
+            if (channel.isActive()) {
                 chain = channelMap.putIfAbsent(channel, netty4ChannelChain);
             }
-            if (chain == null){
+            if (chain == null) {
                 chain = netty4ChannelChain;
             }
         }
@@ -66,7 +68,7 @@ public class Netty4ChannelChain extends AbstractChannelChain {
      * @param channel
      */
     static void removeChannelIfDisconnected(Channel channel) {
-        if (channel != null && !channel.isActive()){
+        if (channel != null && !channel.isActive()) {
             channelMap.remove(channel);
         }
     }
@@ -98,7 +100,7 @@ public class Netty4ChannelChain extends AbstractChannelChain {
 
     @Override
     public void setAttribute(String key, Object value) {
-        if (value == null){
+        if (value == null) {
             attributes.remove(key);
         } else {
             attributes.put(key, value);
@@ -111,15 +113,27 @@ public class Netty4ChannelChain extends AbstractChannelChain {
     }
 
     @Override
-    public void closing() {
-        super.closing();
-        if (isClosing()){
-
-            removeChannelIfDisconnected(channel);
-            attributes.clear();
-            channel.close();
+    public void close() {
+        try {
+            super.close();
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
         }
-        setClosing(false);
+        try {
+            removeChannelIfDisconnected(channel);
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
+        }
+        try {
+            attributes.clear();
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
+        }
+        try {
+            channel.close();
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -129,7 +143,7 @@ public class Netty4ChannelChain extends AbstractChannelChain {
         try {
             ChannelFuture future = channel.writeAndFlush(message);
             if (sent) {
-                //timeout = getUrl().getPositiveParameter(Constants.TIMEOUT_KEY, Constants.DEFAULT_TIMEOUT);
+                timeout = getUrl().getPositiveParam(Constants.PARAMETER.TIMEOUT_KEY, Constants.VALUE.DEFAULT_TIMEOUT);
                 success = future.await(timeout);
             }
             Throwable cause = future.cause();
@@ -144,6 +158,11 @@ public class Netty4ChannelChain extends AbstractChannelChain {
             throw new LinkingException(this, "Failed to send message " + message + " to " + getRemoteAddress()
                     + "in timeout(" + timeout + "ms) limit");
         }
+    }
+
+    @Override
+    public void reset(URL url) {
+
     }
 
     @Override

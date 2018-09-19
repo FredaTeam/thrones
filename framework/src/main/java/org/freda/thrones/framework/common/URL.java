@@ -3,6 +3,7 @@ package org.freda.thrones.framework.common;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import org.freda.thrones.framework.constants.Constants;
+import org.freda.thrones.framework.utils.NetUtils;
 
 import java.io.Serializable;
 import java.net.InetSocketAddress;
@@ -49,6 +50,8 @@ public class URL implements Serializable {
      */
     private Map<String, String> params;
 
+    private volatile transient String ip;
+
     // ==============cache==============
     private volatile transient Map<String, Number> numbers;
 
@@ -88,6 +91,14 @@ public class URL implements Serializable {
                 ", port=" + port +
                 '}';
     }
+
+    public String getIp() {
+        if (ip == null) {
+            ip = NetUtils.getIpByHost(host);
+        }
+        return ip;
+    }
+
     /**
      * Parse url string
      *
@@ -174,7 +185,7 @@ public class URL implements Serializable {
                 }
             }
         }
-        if (hasAndEqual){
+        if (hasAndEqual) {
             return this;
         }
         Map<String, String> map = Maps.newHashMap(getParams());

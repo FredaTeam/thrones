@@ -27,6 +27,8 @@ public interface Constants {
         String IS_SERVER_KEY = "isserver";
 
         String RECONNECT_KEY = "reconnect";
+
+        String MESSAGE_EXECUTOR = "message.executor";
     }
 
     interface VALUE {
@@ -39,5 +41,7 @@ public interface Constants {
         int DEFAULT_RECONNECT_PERIOD = 2000;
 
         int DEFAULT_IO_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
+
+        int MESSAGE_EXECUTOR_THREADS = 200;
     }
 }

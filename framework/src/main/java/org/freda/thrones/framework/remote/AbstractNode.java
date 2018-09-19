@@ -3,6 +3,7 @@ package org.freda.thrones.framework.remote;
 import com.google.common.base.Preconditions;
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.constants.Constants;
+import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 
 import java.util.Objects;
@@ -40,7 +41,12 @@ public abstract class AbstractNode implements NodePoint, ChannelChainHandler {
     }
 
     @Override
-    public void onConnected(ChannelChain channelChain) {
+    public void send(Object message) throws LinkingException {
+        send(message, false);
+    }
+
+    @Override
+    public void onConnected(ChannelChain channelChain) throws LinkingException {
         if (closed) {
             return;
         }
@@ -48,12 +54,12 @@ public abstract class AbstractNode implements NodePoint, ChannelChainHandler {
     }
 
     @Override
-    public void onDisConnected(ChannelChain channelChain) {
+    public void onDisConnected(ChannelChain channelChain) throws LinkingException {
         handler.onDisConnected(channelChain);
     }
 
     @Override
-    public void onReceived(ChannelChain channelChain, Object message) {
+    public void onReceived(ChannelChain channelChain, Object message) throws LinkingException {
         if (closed) {
             return;
         }
@@ -61,7 +67,7 @@ public abstract class AbstractNode implements NodePoint, ChannelChainHandler {
     }
 
     @Override
-    public void onSent(ChannelChain channelChain, Object message) {
+    public void onSent(ChannelChain channelChain, Object message) throws LinkingException {
         if (closed) {
             return;
         }
@@ -69,7 +75,7 @@ public abstract class AbstractNode implements NodePoint, ChannelChainHandler {
     }
 
     @Override
-    public void onError(ChannelChain channelChain, Throwable throwable) {
+    public void onError(ChannelChain channelChain, Throwable throwable) throws LinkingException {
         handler.onError(channelChain, throwable);
     }
 

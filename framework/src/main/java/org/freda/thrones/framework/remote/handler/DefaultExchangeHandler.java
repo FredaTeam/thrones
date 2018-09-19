@@ -2,6 +2,7 @@ package org.freda.thrones.framework.remote.handler;
 
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
+import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.remote.exchange.DefaultExchangeChannelChain;
 import org.freda.thrones.framework.remote.exchange.ExchangeChannelChain;
@@ -23,7 +24,7 @@ public class DefaultExchangeHandler implements ChannelChainHandlerDelegate {
     }
 
     @Override
-    public void onConnected(ChannelChain channelChain) {
+    public void onConnected(ChannelChain channelChain) throws LinkingException {
         ExchangeChannelChain exchangeChannelChain = DefaultExchangeChannelChain.getOrAddChannel(channelChain);
         try {
             handler.onConnected(exchangeChannelChain);
@@ -33,7 +34,7 @@ public class DefaultExchangeHandler implements ChannelChainHandlerDelegate {
     }
 
     @Override
-    public void onDisConnected(ChannelChain channelChain) {
+    public void onDisConnected(ChannelChain channelChain) throws LinkingException {
         ExchangeChannelChain exchangeChannelChain = DefaultExchangeChannelChain.getOrAddChannel(channelChain);
         try {
             handler.onDisConnected(exchangeChannelChain);
@@ -43,17 +44,17 @@ public class DefaultExchangeHandler implements ChannelChainHandlerDelegate {
     }
 
     @Override
-    public void onReceived(ChannelChain channelChain, Object message) {
+    public void onReceived(ChannelChain channelChain, Object message) throws LinkingException {
 
     }
 
     @Override
-    public void onSent(ChannelChain channelChain, Object message) {
+    public void onSent(ChannelChain channelChain, Object message) throws LinkingException {
 
     }
 
     @Override
-    public void onError(ChannelChain channelChain, Throwable throwable) {
+    public void onError(ChannelChain channelChain, Throwable throwable) throws LinkingException {
 
     }
 

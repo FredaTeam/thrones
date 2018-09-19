@@ -1,22 +1,15 @@
-package org.freda.thrones.framework.registry;
+package org.freda.thrones.registry;
+
 
 import com.google.common.net.HostAndPort;
-import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.HealthClient;
-import com.orbitz.consul.KeyValueClient;
 import com.orbitz.consul.NotRegisteredException;
-import com.orbitz.consul.cache.KVCache;
 import com.orbitz.consul.model.ConsulResponse;
-import com.orbitz.consul.model.agent.ImmutableRegCheck;
-import com.orbitz.consul.model.agent.ImmutableRegistration;
-import com.orbitz.consul.model.agent.Registration;
-import com.orbitz.consul.model.health.ImmutableServiceHealth;
 import com.orbitz.consul.model.health.ServiceHealth;
 
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -25,14 +18,13 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Create on 2018/9/10 21:54
  */
-public class ConsulTest {
+public class ConsulRegistryTest {
 
     private static final Lock LOCK = new ReentrantLock();
     private static final Condition STOP = LOCK.newCondition();
 
 
     public static void main(String[] args) throws NotRegisteredException, InterruptedException {
-
         new Thread(() -> {
             try {
                 ServerSocket serverSocket = new ServerSocket();

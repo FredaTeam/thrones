@@ -90,13 +90,8 @@ fabric.properties
 .idea/
 build/
 consumer/build/
-consumer/src/main/resources/
 consumer/src/test/
 framework/build/
 framework/out/
-framework/src/main/resources/
-framework/src/test/resources/
 provider/build/
-provider/src/main/resources/
-provider/src/test/resources/
 thrones.iml

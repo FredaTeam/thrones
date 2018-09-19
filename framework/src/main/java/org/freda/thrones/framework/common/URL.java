@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class URL implements Serializable {
 
     /**
-     * current time use self protocol: "thrones"
+     * such as provider consumer ...
      */
     private String protocol;
 

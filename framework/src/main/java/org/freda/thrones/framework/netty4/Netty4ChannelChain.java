@@ -85,7 +85,7 @@ public class Netty4ChannelChain extends AbstractChannelChain {
 
     @Override
     public boolean isConnected() {
-        return closed() && !channel.isActive();
+        return !closed() && channel.isActive();
     }
 
     @Override

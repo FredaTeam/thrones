@@ -180,8 +180,9 @@ public class NetUtils {
      * @return first valid local IP
      */
     public static InetAddress getLocalAddress() {
-        if (LOCAL_ADDRESS != null)
+        if (LOCAL_ADDRESS != null){
             return LOCAL_ADDRESS;
+        }
         InetAddress localAddress = doGetLocalAddress();
         LOCAL_ADDRESS = localAddress;
         return localAddress;

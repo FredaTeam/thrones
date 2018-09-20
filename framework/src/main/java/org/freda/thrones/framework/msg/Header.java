@@ -10,11 +10,11 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * 消息头
  */
-public class Header
-{
+public class Header {
 
     /**
      * 协议标识
+     *
      * @see org.freda.thrones.framework.constants.ThronesTCPConstant
      */
     private String magic;
@@ -27,6 +27,10 @@ public class Header
      */
     private MsgStatusEnum status;
     /**
+     * 判断是否需要返回值 即双向还是单向
+     */
+    private boolean twoWay = true;
+    /**
      * 调用序列号
      */
     private Long sequence;
@@ -36,29 +40,26 @@ public class Header
     private int totalLen;
 
 
-    public Header()
-    {
+    public Header() {
         this.magic = ThronesTCPConstant.THRONES_TCP_MAGIC;
+        this.sequence = getSeq();
     }
 
-    public Header(MsgCommandEnum command, MsgStatusEnum status)
-    {
+    public Header(MsgCommandEnum command, MsgStatusEnum status) {
         this.magic = ThronesTCPConstant.THRONES_TCP_MAGIC;
         this.command = command;
         this.status = status;
         this.sequence = getSeq();
     }
 
-    public Header(MsgCommandEnum command, MsgStatusEnum status, Long sequence)
-    {
+    public Header(MsgCommandEnum command, MsgStatusEnum status, Long sequence) {
         this.magic = ThronesTCPConstant.THRONES_TCP_MAGIC;
         this.command = command;
         this.status = status;
         this.sequence = sequence;
     }
 
-    private Header(String magic, MsgCommandEnum command, MsgStatusEnum status, Long sequence, int totalLen)
-    {
+    private Header(String magic, MsgCommandEnum command, MsgStatusEnum status, Long sequence, int totalLen) {
         this.magic = magic;
         this.command = command;
         this.status = status;
@@ -67,9 +68,7 @@ public class Header
     }
 
 
-
-    protected byte[] toBytes()
-    {
+    protected byte[] toBytes() {
         byte[] headerBytes = new byte[ThronesTCPConstant.THRONES_MSG_HEADER_LEN];
 
         System.arraycopy(magic.getBytes(), 0, headerBytes, 0, 7);
@@ -91,8 +90,7 @@ public class Header
      * @param bytes stream
      * @return Header
      */
-    public static Header read(byte[] bytes)
-    {
+    public static Header read(byte[] bytes) {
         byte[] temp = new byte[7];
         System.arraycopy(bytes, 0, temp, 0, 7);
         String magic = new String(temp);
@@ -135,6 +133,14 @@ public class Header
         this.sequence = sequence;
     }
 
+    public boolean isTwoWay() {
+        return twoWay;
+    }
+
+    public void setTwoWay(boolean twoWay) {
+        this.twoWay = twoWay;
+    }
+
     public int getTotalLen() {
         return totalLen;
     }
@@ -145,8 +151,7 @@ public class Header
 
     private static volatile AtomicLong seq = new AtomicLong(0);
 
-    private long getSeq()
-    {
+    private long getSeq() {
         seq.compareAndSet(Long.MAX_VALUE - 1L, 0L);
 
         return seq.incrementAndGet();

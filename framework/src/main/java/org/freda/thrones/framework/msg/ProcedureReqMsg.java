@@ -7,7 +7,6 @@ import org.freda.thrones.framework.utils.NumberBytesConvertUtils;
 public class ProcedureReqMsg extends BaseMsg {
 
     public ProcedureReqMsg(Header header, byte[] bodyBytes) {
-
         super(header, bodyBytes);
     }
 
@@ -33,7 +32,6 @@ public class ProcedureReqMsg extends BaseMsg {
      * 参数类型
      */
     private Class<?>[] argsTypes;
-
 
     /**
      * read bytes to msg.

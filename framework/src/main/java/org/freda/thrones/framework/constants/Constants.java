@@ -28,7 +28,9 @@ public interface Constants {
 
         String RECONNECT_KEY = "reconnect";
 
-        String MESSAGE_EXECUTOR = "message.executor";
+        String THREAD_NAME_KEY = "thread";
+
+        String DEFAULT_MESSAGE_EXECUTOR = "message.executor";
     }
 
     interface VALUE {

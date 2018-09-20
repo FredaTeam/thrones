@@ -9,7 +9,7 @@ import org.freda.thrones.framework.manager.invoke.Invoker;
  */
 public interface ProxyFactory {
 
-    <T> Object getProxy(Invoker<T> invoker) throws RpcException;
+    <T> T getProxy(Invoker<T> invoker) throws RpcException;
 
     <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) throws RpcException;
 }

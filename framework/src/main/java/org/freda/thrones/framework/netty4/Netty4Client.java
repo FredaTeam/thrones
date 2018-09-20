@@ -55,7 +55,7 @@ public class Netty4Client extends AbstractClient {
             @Override
             protected void initChannel(Channel ch) throws Exception {
                 ch.pipeline()
-                        .addLast("coder", new MsgCoder())
+//                        .addLast("coder", new MsgCoder())
                         .addLast("", clientHandler);
             }
         });
@@ -69,7 +69,6 @@ public class Netty4Client extends AbstractClient {
 
     @Override
     protected void doConnect() throws Throwable {
-        long start = System.currentTimeMillis();
         ChannelFuture future = bootstrap.connect(new InetSocketAddress(getUrl().getHost(), getUrl().getPort()));
 
         boolean ret = future.awaitUninterruptibly(Constants.DEFAULT_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS);

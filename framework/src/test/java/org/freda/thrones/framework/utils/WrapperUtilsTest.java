@@ -18,4 +18,5 @@ public class WrapperUtilsTest {
 //        DemoService demoService2 = WrapperUtils.createInstance(DemoServiceImpl.class);
 //        demoService2.echo("hello world2");
     }
+
 }

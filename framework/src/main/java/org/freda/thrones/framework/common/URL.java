@@ -8,6 +8,7 @@ import org.freda.thrones.framework.utils.NetUtils;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -163,6 +164,21 @@ public class URL implements Serializable {
 
     public Map<String, String> getParams() {
         return params;
+    }
+
+    public URL addParam(String key, String value) {
+        if (key == null || key.length() == 0
+                || value == null || value.length() == 0) {
+            return this;
+        }
+        // if value doesn't change, return immediately
+        if (value.equals(getParams().get(key))) { // value != null
+            return this;
+        }
+
+        Map<String, String> map = Maps.newHashMap(getParams());
+        map.put(key, value);
+        return new URL(protocol, secret, host, port, path, map);
     }
 
     public URL addParam(Map<String, String> parameters) {

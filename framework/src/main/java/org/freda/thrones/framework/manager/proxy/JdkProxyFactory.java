@@ -2,8 +2,12 @@ package org.freda.thrones.framework.manager.proxy;
 
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.RpcException;
+import org.freda.thrones.framework.manager.Invocation;
+import org.freda.thrones.framework.manager.Result;
+import org.freda.thrones.framework.manager.invoke.AbstractProxyInvoker;
 import org.freda.thrones.framework.manager.invoke.Invoker;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
@@ -21,6 +25,13 @@ public class JdkProxyFactory extends AbstractProxyFactory {
 
     @Override
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) throws RpcException {
-        return null;
+
+        return new AbstractProxyInvoker<T>(proxy, type, url) {
+            @Override
+            protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
+                Method method = proxy.getClass().getMethod(methodName, parameterTypes);
+                return method.invoke(proxy, arguments);
+            }
+        };
     }
 }

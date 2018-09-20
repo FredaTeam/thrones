@@ -182,12 +182,12 @@ public class NetUtils {
     public static InetAddress getLocalAddress() {
         if (LOCAL_ADDRESS != null)
             return LOCAL_ADDRESS;
-        InetAddress localAddress = getLocalAddress0();
+        InetAddress localAddress = doGetLocalAddress();
         LOCAL_ADDRESS = localAddress;
         return localAddress;
     }
 
-    private static InetAddress getLocalAddress0() {
+    private static InetAddress doGetLocalAddress() {
         InetAddress localAddress = null;
         try {
             localAddress = InetAddress.getLocalHost();

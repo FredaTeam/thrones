@@ -31,18 +31,21 @@ public class WrappedChannelChainHandler implements ChannelChainHandlerDelegate {
     protected final URL url;
 
     public WrappedChannelChainHandler(ChannelChainHandler handler, URL url) {
+
+        String executorName = url.getParam(Constants.PARAMETER.THREAD_NAME_KEY, Constants.PARAMETER.DEFAULT_MESSAGE_EXECUTOR);
+
         this.executor =
                 new ThreadPoolExecutor(Constants.VALUE.MESSAGE_EXECUTOR_THREADS,
                         Constants.VALUE.MESSAGE_EXECUTOR_THREADS,
                         0,
                         TimeUnit.MILLISECONDS,
                         new SynchronousQueue<Runnable>(),
-                        new ThronesThreadFactory(Constants.PARAMETER.MESSAGE_EXECUTOR, true),
+                        new ThronesThreadFactory(executorName, true),
                         (r, e) -> {
                             String msg = String.format("Thread pool is EXHAUSTED!" +
                                             " Thread Name: %s, Pool Size: %d (active: %d, core: %d, max: %d, largest: %d), Task: %d (completed: %d)," +
                                             " Executor status:(isShutdown:%s, isTerminated:%s, isTerminating:%s), in %s://%s:%d!",
-                                    Constants.PARAMETER.MESSAGE_EXECUTOR, e.getPoolSize(), e.getActiveCount(), e.getCorePoolSize(), e.getMaximumPoolSize(), e.getLargestPoolSize(),
+                                    Constants.PARAMETER.DEFAULT_MESSAGE_EXECUTOR, e.getPoolSize(), e.getActiveCount(), e.getCorePoolSize(), e.getMaximumPoolSize(), e.getLargestPoolSize(),
                                     e.getTaskCount(), e.getCompletedTaskCount(), e.isShutdown(), e.isTerminated(), e.isTerminating(),
                                     url.getProtocol(), url.getIp(), url.getPort());
                             log.warn(msg);

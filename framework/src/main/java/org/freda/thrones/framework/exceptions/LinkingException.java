@@ -18,7 +18,7 @@ public class LinkingException extends Exception {
     public LinkingException(ChannelChain channelChain, String message) {
         this(
                 Objects.isNull(channelChain) ? null : channelChain.getLocalAddress(),
-                Objects.isNull(channelChain) ? null : channelChain.getLocalAddress(),
+                Objects.isNull(channelChain) ? null : channelChain.getRemoteAddress(),
                 message
         );
     }

@@ -213,7 +213,7 @@ public abstract class AbstractClient extends AbstractNode implements Client {
             return getUrl().toInetSocketAddress();
 
         }
-        return channelChain.getLocalAddress();
+        return channelChain.getRemoteAddress();
     }
 
     @Override

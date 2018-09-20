@@ -1,6 +1,3 @@
 rootProject.name = 'thrones'
-include 'consumer'
-include 'provider'
 include 'framework'
 include 'registry'
-

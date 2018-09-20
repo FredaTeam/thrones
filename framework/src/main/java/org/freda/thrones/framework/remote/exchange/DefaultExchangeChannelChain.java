@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.constants.Constants;
 import org.freda.thrones.framework.exceptions.LinkingException;
+import org.freda.thrones.framework.msg.Header;
 import org.freda.thrones.framework.msg.ProcedureReqMsg;
 import org.freda.thrones.framework.msg.ProcedureRespMsg;
 import org.freda.thrones.framework.remote.ChannelChain;

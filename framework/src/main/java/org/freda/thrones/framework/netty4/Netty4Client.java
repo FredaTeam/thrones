@@ -93,6 +93,8 @@ public class Netty4Client extends AbstractClient {
                         Netty4Client.this.channel = null;
                         Netty4ChannelChain.removeChannelIfDisconnected(newChannel);
                     }
+                } else {
+                    Netty4Client.this.channel = newChannel;
                 }
             }
         } else {
@@ -110,10 +112,10 @@ public class Netty4Client extends AbstractClient {
 
     @Override
     protected ChannelChain getChannelChain() {
-
-        if (channel == null || !channel.isActive()) {
+        Channel c = channel;
+        if (c == null || !c.isActive()) {
             return null;
         }
-        return Netty4ChannelChain.getOrAddChannel(channel, getUrl(), null);
+        return Netty4ChannelChain.getOrAddChannel(c, getUrl(), this);
     }
 }

@@ -11,7 +11,7 @@ public class ThronesTCPConstant {
     /**
      * Header len
      */
-    public static final int THRONES_MSG_HEADER_LEN = 21;
+    public static final int THRONES_MSG_HEADER_LEN = 22;
     /**
      * default serializer.
      */

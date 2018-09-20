@@ -6,6 +6,7 @@ import org.freda.thrones.framework.manager.proxy.JdkProxyFactory;
 import org.freda.thrones.framework.manager.proxy.ProxyFactory;
 import org.freda.thrones.framework.utils.DemoService;
 import org.freda.thrones.framework.utils.DemoServiceImpl;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -27,7 +28,7 @@ public class ThronesKernelTest {
         Invoker<DemoService> invoker = thronesKernel.refer(DemoService.class, url);
         DemoService proxyService = jdkProxyFactory.getProxy(invoker);
 
+//        proxyService.echo("mike");
 //        Assert.assertEquals("mike", proxyService.echo("mike"));
     }
-
 }

@@ -140,6 +140,7 @@ public class ResponseCommonFuture implements CommonFuture {
         try {
             return get(timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
+            log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }

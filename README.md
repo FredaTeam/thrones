@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mikefreemanNice/thrones.svg?branch=master)](https://travis-ci.org/mikefreemanNice/thrones)
+# Thrones [![Build Status](https://travis-ci.org/mikefreemanNice/thrones.svg?branch=master)](https://travis-ci.org/mikefreemanNice/thrones)
 
 # Inroduction
 Thrones is a rpc framework integrate with netty as communicate layer,hessian as serializable framework,

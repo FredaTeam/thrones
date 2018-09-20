@@ -1,5 +1,6 @@
-# Inroduction
 [![Build Status](https://travis-ci.org/mikefreemanNice/thrones.svg?branch=master)](https://travis-ci.org/mikefreemanNice/thrones)
+
+# Inroduction
 Thrones is a rpc framework integrate with netty as communicate layer,hessian as serializable framework,
 consul as registry center. Including support tracer,monitor,cluster,circuit-breaker and so on.
 

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.caucho:hessian:4.0.51">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.caucho/hessian/4.0.51/29047eb08639a98e4b9437d7cbe81fb0471ba7/hessian-4.0.51.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.caucho/hessian/4.0.51/a6ff17ac52f0650f95920034ff5774823eebd522/hessian-4.0.51-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -2,7 +2,6 @@
 Thrones is a rpc framework integrate with netty as communicate layer,hessian as serializable framework,
 consul as registry center. Including support tracer,monitor,cluster,circuit-breaker and so on.
 
-
 # Function&Module List
 
 | Module(function)                        |    status     |  author   | comment |

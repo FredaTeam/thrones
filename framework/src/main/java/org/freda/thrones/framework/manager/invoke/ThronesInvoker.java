@@ -9,7 +9,7 @@ import org.freda.thrones.framework.exceptions.RpcStatus;
 import org.freda.thrones.framework.manager.Invocation;
 import org.freda.thrones.framework.manager.Result;
 import org.freda.thrones.framework.remote.ChannelChain;
-import org.freda.thrones.framework.remote.client.ExchangeClient;
+import org.freda.thrones.framework.remote.client.ExechangeClient;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -22,7 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public class ThronesInvoker<T> extends AbstractInvoker<T> {
 
-    private final ExchangeClient[] clients;
+    private final ExechangeClient[] clients;
 
     private final String version;
 
@@ -31,11 +31,11 @@ public class ThronesInvoker<T> extends AbstractInvoker<T> {
     private final Set<Invoker<?>> invokers;
 
 
-    public ThronesInvoker(Class<T> serviceType, URL url, ExchangeClient[] clients) {
+    public ThronesInvoker(Class<T> serviceType, URL url, ExechangeClient[] clients) {
         this(serviceType, url, clients, null);
     }
 
-    public ThronesInvoker(Class<T> serviceType, URL url, ExchangeClient[] clients, Set<Invoker<?>> invokers) {
+    public ThronesInvoker(Class<T> serviceType, URL url, ExechangeClient[] clients, Set<Invoker<?>> invokers) {
         super(serviceType, url, new String[]{Constants.PARAMETER.INTERFACE_KEY, Constants.PARAMETER.GROUP_KEY, Constants.PARAMETER.TOKEN_KEY, Constants.PARAMETER.TIMEOUT_KEY});
         this.clients = clients;
         // get version.
@@ -47,7 +47,7 @@ public class ThronesInvoker<T> extends AbstractInvoker<T> {
     @Override
     protected Result doInvoke(Invocation invocation) throws Throwable {
         try {
-            ExchangeClient currentClient = clients[0];
+            ExechangeClient currentClient = clients[0];
             return (Result) currentClient.request(invocation).get();
         } catch (LinkingException e) {
             throw new RpcException(RpcStatus.of(RpcStatus.NETWORK_EXCEPTION, e.getMessage()));
@@ -59,7 +59,7 @@ public class ThronesInvoker<T> extends AbstractInvoker<T> {
         if (!super.isAvailable()) {
             return false;
         }
-        Optional<ExchangeClient> optional = Arrays.stream(clients).filter(ChannelChain::isConnected).findAny();
+        Optional<ExechangeClient> optional = Arrays.stream(clients).filter(ChannelChain::isConnected).findAny();
         return optional.isPresent();
     }
 

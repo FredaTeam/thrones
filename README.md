@@ -1,6 +1,6 @@
 # Thrones [![Build Status](https://travis-ci.org/mikefreemanNice/thrones.svg?branch=master)](https://travis-ci.org/mikefreemanNice/thrones)
 
-# Inroduction
+# Introduction
 Thrones is a rpc framework integrate with netty as communicate layer,hessian as serializable framework,
 consul as registry center. Including support tracer,monitor,cluster,circuit-breaker and so on.
 
@@ -10,7 +10,7 @@ consul as registry center. Including support tracer,monitor,cluster,circuit-brea
 |                :----:                   |    :----:     |  :----:   | :----:  |
 | [Transport Layer](#transport-layer)                         |    doing      |   Rally   |    -    |
 | [Encode&Decode](#encode-decode)                   |    doing      |   Rally   |    -    |
-| [Exhange Layer](#exhange-layer)                      |    doing      |  Michael  |    -    |
+| [Exehange Layer](#exehange-layer)                      |    doing      |  Michael  |    -    |
 | [HeartBeat](#heartbeat)                           |    doing      |  Michael  |    -    |
 | [ServiceKernel](#servicekernel)                     |    doing      |  Michael  |    -    |
 | [Registry Layer](#registry-layer)                   |    doing      |  Michael  |    -    |
@@ -28,7 +28,7 @@ consul as registry center. Including support tracer,monitor,cluster,circuit-brea
 # Encode Decode
 
 
-# Exhange Layer
+# Exehange Layer
 
 
 # HeartBeat 

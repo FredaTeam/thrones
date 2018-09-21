@@ -88,6 +88,7 @@ public class ResponseCommonFuture implements CommonFuture {
     // client receive response and notify future to get
     public static void receiveRespMsg(ChannelChain channelChain, ProcedureRespMsg respMsg) {
         try {
+            System.out.println(respMsg.getHeader().getSequence());
             ResponseCommonFuture future = FUTURES.remove(respMsg.getHeader().getSequence());
             if (Objects.nonNull(future)) {
                 future.doReceive(respMsg);
@@ -171,7 +172,7 @@ public class ResponseCommonFuture implements CommonFuture {
         return fetchResponseMsg();
     }
 
-    private Object fetchResponseMsg() throws TimeoutException {
+    private Object fetchResponseMsg() throws LinkingException {
         ProcedureRespMsg respMsg = procedureRespMsg;
         if (Objects.isNull(respMsg)) {
             throw new IllegalStateException("response is null");
@@ -183,7 +184,8 @@ public class ResponseCommonFuture implements CommonFuture {
         if (MsgStatusEnum.TIMEOUT == status) {
             throw new TimeoutException(channelChain, "calling timeout");
         }
-        throw new RuntimeException("fetch response error");
+        log.warn("fetchResponseMsg error: " + respMsg.getErrorMsg());
+        throw new LinkingException(channelChain, respMsg.getErrorMsg());
     }
 
     @Override

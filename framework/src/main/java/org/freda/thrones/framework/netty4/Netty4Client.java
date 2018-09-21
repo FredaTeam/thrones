@@ -15,7 +15,7 @@ import org.freda.thrones.framework.constants.Constants;
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
-import org.freda.thrones.framework.remote.exchange.AbstractClient;
+import org.freda.thrones.framework.remote.exechange.AbstractClient;
 import org.freda.thrones.framework.remote.handler.HandlerKernel;
 
 import java.net.InetSocketAddress;
@@ -51,11 +51,13 @@ public class Netty4Client extends AbstractClient {
                 .channel(NioSocketChannel.class);
 
         bootstrap.handler(new ChannelInitializer() {
+            Netty4CodecHandler codecHandler = new Netty4CodecHandler(getUrl(), Netty4Client.this);
 
             @Override
             protected void initChannel(Channel ch) throws Exception {
                 ch.pipeline()
-//                        .addLast("coder", new MsgCoder())
+                        .addLast("decoder",codecHandler.getDecoder())
+                        .addLast("encoder",codecHandler.getEncoder())
                         .addLast("", clientHandler);
             }
         });

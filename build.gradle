@@ -4,11 +4,11 @@ buildscript {
 //        jcenter()
 //        maven {url  "http://jcenter.bintray.com"}
 //        maven { url 'https://plugins.gradle.org/m2/'}
-        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     }
 }
 
-allprojects{
+allprojects {
 
     group = 'org.freda'
     version = '1.0.1'
@@ -26,8 +26,9 @@ def slf4jApiVersion = '1.7.25'
 def nettyVersion = '4.1.28.Final'
 def lombokVersion = '1.18.2'
 def javaasistVersion = '3.12.1.GA'
+def apacheCommonLangVersion = '3.4'
 
-subprojects{
+subprojects {
 
     repositories {
         mavenCentral()
@@ -37,18 +38,18 @@ subprojects{
 //        maven {url 'https://repo.spring.io/libs-snapshot'}
 //        maven {url  "http://jcenter.bintray.com"}
 //        maven { url 'https://plugins.gradle.org/m2/'}
-        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-        flatDir { dirs 'libs'}
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        flatDir { dirs 'libs' }
     }
 
     dependencies {
         // COMPILE
-        compile fileTree(dir:'libs',include:'*.jar')
+        compile fileTree(dir: 'libs', include: '*.jar')
         compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jApiVersion
         compile group: 'org.slf4j', name: 'slf4j-simple', version: slf4jApiVersion
         compile group: 'io.netty', name: 'netty-all', version: nettyVersion
         compile group: 'javassist', name: 'javassist', version: javaasistVersion
-
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: apacheCommonLangVersion
 
         // TEST
         testCompile group: 'junit', name: 'junit', version: junitVersion

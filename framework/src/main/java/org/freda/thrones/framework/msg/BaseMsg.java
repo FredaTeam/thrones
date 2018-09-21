@@ -2,21 +2,20 @@ package org.freda.thrones.framework.msg;
 
 import org.freda.thrones.framework.constants.ThronesTCPConstant;
 
+import java.io.Serializable;
+
 /**
  * Msg 基类
  */
-public abstract class BaseMsg
-{
+public abstract class BaseMsg implements Serializable {
     protected Header header = new Header();
 
     protected byte[] bodyBytes = new byte[0];
 
-    public BaseMsg()
-    {
+    public BaseMsg() {
     }
 
-    public BaseMsg(Header header, byte[] bodyBytes)
-    {
+    public BaseMsg(Header header, byte[] bodyBytes) {
         this.header = header;
 
         this.bodyBytes = bodyBytes;
@@ -25,14 +24,12 @@ public abstract class BaseMsg
     }
 
 
-
     /**
      * 消息转化为Bytes
      *
      * @return
      */
-    public byte[] toBytes()
-    {
+    public byte[] toBytes() {
         msgToBytes();
 
         header.setTotalLen(ThronesTCPConstant.THRONES_MSG_HEADER_LEN + bodyBytes.length);
@@ -49,8 +46,7 @@ public abstract class BaseMsg
     /**
      * read bytes to msg.
      */
-    protected void bytesToMsg()
-    {
+    protected void bytesToMsg() {
         /**
          * empty method
          */
@@ -59,8 +55,7 @@ public abstract class BaseMsg
     /**
      * bean to bodyBytes
      */
-    protected void msgToBytes()
-    {
+    protected void msgToBytes() {
         /**
          * empty method
          */

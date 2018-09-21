@@ -88,7 +88,7 @@ public class Netty4ClientHandler extends ChannelDuplexHandler {
                 ProcedureReqMsg reqMsg = (ProcedureReqMsg)msg;
                 ProcedureRespMsg respMsg = new ProcedureRespMsg(MsgStatusEnum.ERROR,
                         reqMsg.getHeader().getSequence(),
-                        promise.cause().getMessage(), null, Boolean.FALSE);
+                        "", null, Boolean.FALSE);
                 channelChainHandler.onReceived(channelChain, respMsg);
             } else {
                 channelChainHandler.onSent(channelChain, msg);

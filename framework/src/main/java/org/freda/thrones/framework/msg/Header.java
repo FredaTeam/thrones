@@ -9,6 +9,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 消息头
+ *
+ * magic + req/res + status + twoWay + sequence + totalLength
+ *
+ * 7 + 1 + 1 + 1 + 8 + 4 = 22
  */
 public class Header {
 
@@ -43,6 +47,11 @@ public class Header {
     public Header() {
         this.magic = ThronesTCPConstant.THRONES_TCP_MAGIC;
         this.sequence = getSeq();
+    }
+
+    public Header(Long sequence) {
+        this.magic = ThronesTCPConstant.THRONES_TCP_MAGIC;
+        this.sequence = sequence;
     }
 
     public Header(MsgCommandEnum command, MsgStatusEnum status) {
@@ -147,6 +156,18 @@ public class Header {
 
     public void setTotalLen(int totalLen) {
         this.totalLen = totalLen;
+    }
+
+    public String getMagic() {
+        return magic;
+    }
+
+    public void setMagic(String magic) {
+        this.magic = magic;
+    }
+
+    public void setSequence(Long sequence) {
+        this.sequence = sequence;
     }
 
     private static volatile AtomicLong seq = new AtomicLong(0);

@@ -5,6 +5,7 @@ import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.constants.Constants;
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.exceptions.RpcException;
+import org.freda.thrones.framework.manager.Invocation;
 import org.freda.thrones.framework.manager.export.Exporter;
 import org.freda.thrones.framework.manager.export.ThronesExporter;
 import org.freda.thrones.framework.manager.invoke.Invoker;
@@ -52,8 +53,10 @@ public class ThronesKernel extends AbstractKernel {
         }
 
         @Override
-        public void onReceived(ChannelChain channelChain, Object message) {
-
+        public void onReceived(ChannelChain channelChain, Object message) throws LinkingException {
+            if (message instanceof Invocation) {
+                reply((ExchangeChannelChain) channelChain, message);
+            }
         }
 
         @Override

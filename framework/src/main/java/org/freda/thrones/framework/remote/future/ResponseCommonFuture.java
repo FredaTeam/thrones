@@ -171,7 +171,7 @@ public class ResponseCommonFuture implements CommonFuture {
         return fetchResponseMsg();
     }
 
-    private Object fetchResponseMsg() throws TimeoutException {
+    private Object fetchResponseMsg() throws LinkingException {
         ProcedureRespMsg respMsg = procedureRespMsg;
         if (Objects.isNull(respMsg)) {
             throw new IllegalStateException("response is null");
@@ -183,7 +183,8 @@ public class ResponseCommonFuture implements CommonFuture {
         if (MsgStatusEnum.TIMEOUT == status) {
             throw new TimeoutException(channelChain, "calling timeout");
         }
-        throw new RuntimeException("fetch response error");
+        log.warn(respMsg.getErrorMsg());
+        throw new LinkingException(channelChain, respMsg.getErrorMsg());
     }
 
     @Override

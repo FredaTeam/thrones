@@ -14,7 +14,7 @@ public class ProcedureRespMsg extends BaseMsg {
 
     /**
      * 用于手动创建Resp
-     *
+     * <p>
      * ************
      * if returnVoid is true that set the result is null please.
      * ************
@@ -42,6 +42,10 @@ public class ProcedureRespMsg extends BaseMsg {
         super(header, bodyBytes);
     }
 
+    public ProcedureRespMsg(Header header) {
+        this.header = header;
+    }
+
     /**
      * 错误信息
      */
@@ -59,8 +63,7 @@ public class ProcedureRespMsg extends BaseMsg {
      * read bytes to msg.
      */
     @Override
-    protected void bytesToMsg()
-    {
+    protected void bytesToMsg() {
         int pos = 1;
 
         returnVoid = bodyBytes[0] == (byte) 1;
@@ -71,8 +74,7 @@ public class ProcedureRespMsg extends BaseMsg {
         int errorMsgLen = NumberBytesConvertUtils.bytes4ToInt(temp);
         pos += 4;
 
-        if (errorMsgLen > 0)
-        {
+        if (errorMsgLen > 0) {
             temp = new byte[errorMsgLen];
             System.arraycopy(bodyBytes, pos, temp, 0, errorMsgLen);
             errorMsg = new String(temp);
@@ -93,20 +95,18 @@ public class ProcedureRespMsg extends BaseMsg {
      * bean to bodyBytes
      */
     @Override
-    protected void msgToBytes()
-    {
+    protected void msgToBytes() {
         byte[] errorMsgByte = (errorMsg != null && !errorMsg.equals("") ? errorMsg.getBytes() : new byte[0]);
         byte[] resultByte = SerializerFactory.getSerializer(ThronesTCPConstant.DEFAULT_SERIALIZER).serialize(result);
         int pos = 1;
 
-        bodyBytes = new byte[1 + 2*4 + errorMsgByte.length + resultByte.length];
+        bodyBytes = new byte[1 + 2 * 4 + errorMsgByte.length + resultByte.length];
 
         bodyBytes[0] = returnVoid ? (byte) 1 : (byte) 0;
 
-        System.arraycopy(NumberBytesConvertUtils.intToBytes4(errorMsgByte.length), 0, bodyBytes, pos,4);
-        pos +=4;
-        if (errorMsgByte.length > 0)
-        {
+        System.arraycopy(NumberBytesConvertUtils.intToBytes4(errorMsgByte.length), 0, bodyBytes, pos, 4);
+        pos += 4;
+        if (errorMsgByte.length > 0) {
             System.arraycopy(errorMsgByte, 0, bodyBytes, pos, errorMsgByte.length);
             pos += errorMsgByte.length;
         }

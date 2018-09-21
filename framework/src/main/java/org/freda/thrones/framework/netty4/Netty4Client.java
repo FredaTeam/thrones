@@ -51,11 +51,13 @@ public class Netty4Client extends AbstractClient {
                 .channel(NioSocketChannel.class);
 
         bootstrap.handler(new ChannelInitializer() {
+            Netty4CodecHandler codecHandler = new Netty4CodecHandler(getUrl(), Netty4Client.this);
 
             @Override
             protected void initChannel(Channel ch) throws Exception {
                 ch.pipeline()
-//                        .addLast("coder", new MsgCoder())
+                        .addLast("decoder",codecHandler.getDecoder())
+                        .addLast("encoder",codecHandler.getEncoder())
                         .addLast("", clientHandler);
             }
         });

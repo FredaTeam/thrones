@@ -71,10 +71,10 @@ public class Netty4Server extends AbstractServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel ch) throws Exception {
-//                        NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec(), getUrl(), NettyServer.this);
+                        Netty4CodecHandler codecHandler = new Netty4CodecHandler(getUrl(), Netty4Server.this);
                         ch.pipeline()
-//                                .addLast("decoder", adapter.getDecoder())
-//                                .addLast("encoder", adapter.getEncoder())
+                                .addLast("decoder", codecHandler.getDecoder())
+                                .addLast("encoder", codecHandler.getEncoder())
                                 .addLast("handler", netty4ServerHandler);
                     }
                 });

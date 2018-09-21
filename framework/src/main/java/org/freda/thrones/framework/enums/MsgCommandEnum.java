@@ -10,7 +10,7 @@ import java.util.Arrays;
  */
 public enum MsgCommandEnum {
 
-    PROCEDURE((byte) 1, "procedure message", ProcedureReqMsg.class),
+    PROCEDURE_REQ((byte) 1, "procedure req message", ProcedureReqMsg.class),
 
     PROCEDURE_RES((byte) -1, "procedure response message", ProcedureRespMsg.class),
 

@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.constants.Constants;
 import org.freda.thrones.framework.exceptions.LinkingException;
-import org.freda.thrones.framework.remote.exechange.AbstractChannelChain;
+import org.freda.thrones.framework.remote.exchange.AbstractChannelChain;
 import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 
 import java.net.InetSocketAddress;
@@ -139,7 +139,7 @@ public class Netty4ChannelChain extends AbstractChannelChain {
     @Override
     public void send(Object message, boolean sent) throws LinkingException {
         boolean success = true;
-        int timeout = 5000;
+        int timeout = 0;
         try {
             ChannelFuture future = channel.writeAndFlush(message);
             if (sent) {

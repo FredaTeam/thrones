@@ -8,8 +8,11 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public String echo(String str) {
-        System.out.println(this.getClass().getSimpleName());
-        System.out.println(str);
         return str;
+    }
+
+    @Override
+    public void print(String str) {
+        System.out.println(str);
     }
 }

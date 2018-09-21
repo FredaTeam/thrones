@@ -17,4 +17,9 @@ public class DemoWrapper2 implements DemoService {
         System.out.println(this.getClass().getSimpleName());
         return demoService.echo(str);
     }
+
+    @Override
+    public void print(String str) {
+
+    }
 }

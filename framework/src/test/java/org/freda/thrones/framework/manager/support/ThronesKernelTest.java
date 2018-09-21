@@ -28,7 +28,37 @@ public class ThronesKernelTest {
         Invoker<DemoService> invoker = thronesKernel.refer(DemoService.class, url);
         DemoService proxyService = jdkProxyFactory.getProxy(invoker);
 
-//        proxyService.echo("mike");
-//        Assert.assertEquals("mike", proxyService.echo("mike"));
+        proxyService.print("michael");
+
+        Assert.assertEquals("michael", proxyService.echo("michael"));
+
+    }
+
+
+    // jdk proxy can not apply in interfaceInClass
+    @Test
+    public void test_interfaceInClass() {
+//
+//        ProxyFactory proxy = new JdkProxyFactory();
+//
+//        Demo demo = new Demo1();
+//        ThronesKernel kernel = new ThronesKernel();
+//        URL url = URL.valueOf("thrones://127.0.0.1:8081/" + Demo.class.getSimpleName());
+//        kernel.export(proxy.getInvoker(demo, Demo.class, url));
+//
+//        Demo newDemo = proxy.getProxy(kernel.refer(Demo.class, url));
+//        System.out.println(newDemo.print("hello world"));
+    }
+
+    interface Demo {
+        String print(String str);
+    }
+
+    class Demo1 implements Demo {
+
+        @Override
+        public String print(String str) {
+            return str;
+        }
     }
 }

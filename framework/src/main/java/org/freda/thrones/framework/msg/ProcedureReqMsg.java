@@ -10,6 +10,10 @@ public class ProcedureReqMsg extends BaseMsg {
         super(header, bodyBytes);
     }
 
+    public ProcedureReqMsg(Header header) {
+        this.header = header;
+    }
+
     public ProcedureReqMsg() {
     }
 
@@ -53,7 +57,7 @@ public class ProcedureReqMsg extends BaseMsg {
         temp = new byte[4];
         System.arraycopy(bodyBytes, pos, temp, 0, 4);
         int methodNameLen = NumberBytesConvertUtils.bytes4ToInt(temp);
-        pos +=4;
+        pos += 4;
 
         temp = new byte[methodNameLen];
         System.arraycopy(bodyBytes, pos, temp, 0, methodNameLen);
@@ -63,7 +67,7 @@ public class ProcedureReqMsg extends BaseMsg {
         temp = new byte[4];
         System.arraycopy(bodyBytes, pos, temp, 0, 4);
         int argsLen = NumberBytesConvertUtils.bytes4ToInt(temp);
-        pos +=4;
+        pos += 4;
 
         temp = new byte[argsLen];
         System.arraycopy(bodyBytes, pos, temp, 0, argsLen);
@@ -77,15 +81,14 @@ public class ProcedureReqMsg extends BaseMsg {
 
         temp = new byte[argsTypesLen];
         System.arraycopy(bodyBytes, pos, temp, 0, argsTypesLen);
-        this.argsTypes = (Class<?>[])SerializerFactory.getSerializer(ThronesTCPConstant.DEFAULT_SERIALIZER).deserialize(temp);
+        this.argsTypes = (Class<?>[]) SerializerFactory.getSerializer(ThronesTCPConstant.DEFAULT_SERIALIZER).deserialize(temp);
     }
 
     /**
      * bean to bodyBytes
      */
     @Override
-    protected void msgToBytes()
-    {
+    protected void msgToBytes() {
 
         byte[] itfNameBytes = itfName.getBytes();
         byte[] methodNameBytes = methodName.getBytes();
@@ -98,11 +101,11 @@ public class ProcedureReqMsg extends BaseMsg {
 
         int pos = 0;
         System.arraycopy(NumberBytesConvertUtils.intToBytes4(itfNameBytes.length), 0, bodyBytes, pos, 4);
-        pos +=4;
-        System.arraycopy(itfNameBytes, 0, itfNameBytes, pos , itfNameBytes.length);
+        pos += 4;
+        System.arraycopy(itfNameBytes, 0, itfNameBytes, pos, itfNameBytes.length);
         pos += itfNameBytes.length;
         System.arraycopy(NumberBytesConvertUtils.intToBytes4(methodNameBytes.length), 0, bodyBytes, pos, 4);
-        pos +=4;
+        pos += 4;
         System.arraycopy(methodNameBytes, 0, bodyBytes, pos, methodNameBytes.length);
         pos += methodNameBytes.length;
         System.arraycopy(NumberBytesConvertUtils.intToBytes4(argsBytes.length), 0, bodyBytes, pos, 4);
@@ -139,8 +142,7 @@ public class ProcedureReqMsg extends BaseMsg {
         return args;
     }
 
-    public void setArgs(Object[] args)
-    {
+    public void setArgs(Object[] args) {
         this.args = args;
     }
 

@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
-import org.freda.thrones.framework.remote.exchange.DefaultExchangeChannelChain;
-import org.freda.thrones.framework.remote.exchange.ExchangeChannelChain;
+import org.freda.thrones.framework.remote.exechange.DefaultExechangeChannelChain;
+import org.freda.thrones.framework.remote.exechange.ExechangeChannelChain;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -16,13 +16,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Create on 2018/9/19 14:35
  */
 @Slf4j
-public class DefaultExchangeServer implements ExchangeServer {
+public class DefaultExechangeServer implements ExechangeServer {
 
     private final Server server;
 
     private AtomicBoolean closed = new AtomicBoolean(false);
 
-    public DefaultExchangeServer(Server server) {
+    public DefaultExechangeServer(Server server) {
         this.server = server;
     }
 
@@ -35,20 +35,20 @@ public class DefaultExchangeServer implements ExchangeServer {
     }
 
     @Override
-    public Collection<ExchangeChannelChain> getExchangeChannels() {
-        Collection<ExchangeChannelChain> exchangeChannelChains = Lists.newArrayList();
+    public Collection<ExechangeChannelChain> getExechangeChannels() {
+        Collection<ExechangeChannelChain> exechangeChannelChains = Lists.newArrayList();
         Collection<ChannelChain> channelChains = server.getChannelChains();
         if (channelChains != null && !channelChains.isEmpty()) {
             for (ChannelChain channelChain : channelChains) {
-                exchangeChannelChains.add(DefaultExchangeChannelChain.getOrAddChannel(channelChain));
+                exechangeChannelChains.add(DefaultExechangeChannelChain.getOrAddChannel(channelChain));
             }
         }
-        return exchangeChannelChains;
+        return exechangeChannelChains;
     }
 
     @Override
-    public ExchangeChannelChain getExchangeChannel(InetSocketAddress remoteAddress) {
-        return DefaultExchangeChannelChain.getOrAddChannel(server.getChannelChain(remoteAddress));
+    public ExechangeChannelChain getExechangeChannel(InetSocketAddress remoteAddress) {
+        return DefaultExechangeChannelChain.getOrAddChannel(server.getChannelChain(remoteAddress));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class DefaultExchangeServer implements ExchangeServer {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Collection<ChannelChain> getChannelChains() {
-        return (Collection) getExchangeChannels();
+        return (Collection) getExechangeChannels();
     }
 
     @Override
@@ -110,7 +110,7 @@ public class DefaultExchangeServer implements ExchangeServer {
         if (timeout > 0) {
             final long max = (long) timeout;
             final long start = System.currentTimeMillis();
-            while (DefaultExchangeServer.this.isRunning() && System.currentTimeMillis() - start < max) {
+            while (DefaultExechangeServer.this.isRunning() && System.currentTimeMillis() - start < max) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {

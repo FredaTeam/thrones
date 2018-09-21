@@ -8,9 +8,9 @@ import org.freda.thrones.framework.msg.Header;
 import org.freda.thrones.framework.msg.ProcedureReqMsg;
 import org.freda.thrones.framework.msg.ProcedureRespMsg;
 import org.freda.thrones.framework.remote.ChannelChain;
-import org.freda.thrones.framework.remote.exchange.DefaultExchangeChannelChain;
-import org.freda.thrones.framework.remote.exchange.ExchangeChannelChain;
-import org.freda.thrones.framework.remote.exchange.ExchangeHandler;
+import org.freda.thrones.framework.remote.exechange.DefaultExechangeChannelChain;
+import org.freda.thrones.framework.remote.exechange.ExechangeChannelChain;
+import org.freda.thrones.framework.remote.exechange.ExechangeHandler;
 import org.freda.thrones.framework.remote.future.ResponseCommonFuture;
 
 import java.util.Objects;
@@ -20,63 +20,64 @@ import java.util.concurrent.CompletableFuture;
  * Create on 2018/9/8 09:43
  */
 @Slf4j
-public class DefaultExchangeHandler implements ChannelChainHandlerDelegate {
+public class DefaultExechangeHandler implements ChannelChainHandlerDelegate {
 
-    private final ExchangeHandler handler;
+    private final ExechangeHandler handler;
 
-    public DefaultExchangeHandler(ExchangeHandler handler) {
+    public DefaultExechangeHandler(ExechangeHandler handler) {
         Preconditions.checkArgument(Objects.nonNull(handler), "handler can not be null");
         this.handler = handler;
     }
 
     @Override
     public void onConnected(ChannelChain channelChain) throws LinkingException {
-        ExchangeChannelChain exchangeChannelChain = DefaultExchangeChannelChain.getOrAddChannel(channelChain);
+        ExechangeChannelChain exechangeChannelChain = DefaultExechangeChannelChain.getOrAddChannel(channelChain);
         try {
-            handler.onConnected(exchangeChannelChain);
+            handler.onConnected(exechangeChannelChain);
         } finally {
-            DefaultExchangeChannelChain.removeChannelIfDisconnected(channelChain);
+            DefaultExechangeChannelChain.removeChannelIfDisconnected(channelChain);
         }
     }
 
     @Override
     public void onDisConnected(ChannelChain channelChain) throws LinkingException {
-        ExchangeChannelChain exchangeChannelChain = DefaultExchangeChannelChain.getOrAddChannel(channelChain);
+        ExechangeChannelChain exechangeChannelChain = DefaultExechangeChannelChain.getOrAddChannel(channelChain);
         try {
-            handler.onDisConnected(exchangeChannelChain);
+            handler.onDisConnected(exechangeChannelChain);
         } finally {
-            DefaultExchangeChannelChain.removeChannelIfDisconnected(channelChain);
+            DefaultExechangeChannelChain.removeChannelIfDisconnected(channelChain);
         }
     }
 
     @Override
     public void onReceived(ChannelChain channelChain, Object message) throws LinkingException {
-        final ExchangeChannelChain exchangeChannelChain = DefaultExchangeChannelChain.getOrAddChannel(channelChain);
+        final ExechangeChannelChain exechangeChannelChain = DefaultExechangeChannelChain.getOrAddChannel(channelChain);
         if (message instanceof ProcedureReqMsg) {
             ProcedureReqMsg req = (ProcedureReqMsg) message;
             if (req.getHeader().isTwoWay()) {
-                handleRequest(exchangeChannelChain, req);
+                handleRequest(exechangeChannelChain, req);
             } else {
-                handler.onReceived(exchangeChannelChain, req.getRequest());
+                handler.onReceived(exechangeChannelChain, req.getRequest());
             }
         } else if (message instanceof ProcedureRespMsg) {
+            System.out.println(((ProcedureRespMsg) message).getResult());
             ResponseCommonFuture.receiveRespMsg(channelChain, (ProcedureRespMsg) message);
         } else {
-            handler.onReceived(exchangeChannelChain, message);
+            handler.onReceived(exechangeChannelChain, message);
         }
     }
 
-    private void handleRequest(ExchangeChannelChain exchangeChannelChain, ProcedureReqMsg req) throws LinkingException {
+    private void handleRequest(ExechangeChannelChain exechangeChannelChain, ProcedureReqMsg req) throws LinkingException {
         Header header = new Header(req.getHeader().getSequence());
         ProcedureRespMsg resp = new ProcedureRespMsg(header);
 
         Object request = req.getRequest();
         try {
-            CompletableFuture<Object> future = handler.reply(exchangeChannelChain, request);
+            CompletableFuture<Object> future = handler.reply(exechangeChannelChain, request);
             if (future.isDone()) {
                 header.setStatus(MsgStatusEnum.SUCCESS);
                 resp.setResult(future.get());
-                exchangeChannelChain.send(resp);
+                exechangeChannelChain.send(resp);
                 return;
             }
             future.whenComplete((result, t) -> {
@@ -88,15 +89,15 @@ public class DefaultExchangeHandler implements ChannelChainHandlerDelegate {
                         header.setStatus(MsgStatusEnum.ERROR);
                         resp.setErrorMsg(t.getMessage());
                     }
-                    exchangeChannelChain.send(resp);
+                    exechangeChannelChain.send(resp);
                 } catch (LinkingException e) {
-                    log.warn("Send result to consumer failed, channel is " + exchangeChannelChain + ", msg is " + e);
+                    log.warn("Send result to consumer failed, channel is " + exechangeChannelChain + ", msg is " + e);
                 }
             });
         } catch (Throwable t) {
             header.setStatus(MsgStatusEnum.ERROR);
             resp.setErrorMsg(t.getMessage());
-            exchangeChannelChain.send(resp);
+            exechangeChannelChain.send(resp);
         }
     }
 

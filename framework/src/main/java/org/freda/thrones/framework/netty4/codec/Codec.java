@@ -23,5 +23,5 @@ public interface Codec {
     /**
      * decode msg
      */
-    Object decode(Netty4ChannelChain channelChain, ByteBuf byteBuf, List<Object> out);
+    Object decode(Netty4ChannelChain channelChain, ByteBuf byteBuf);
 }

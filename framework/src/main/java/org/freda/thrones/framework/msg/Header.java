@@ -5,6 +5,7 @@ import org.freda.thrones.framework.enums.MsgCommandEnum;
 import org.freda.thrones.framework.enums.MsgStatusEnum;
 import org.freda.thrones.framework.utils.NumberBytesConvertUtils;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -14,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * 7 + 1 + 1 + 1 + 8 + 4 = 22
  */
-public class Header {
+public class Header implements Serializable {
 
     /**
      * 协议标识

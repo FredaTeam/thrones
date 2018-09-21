@@ -49,8 +49,8 @@ public class ThroneCodec extends AbstractCodec {
         byte[] body = serializer.serialize(data);
 
         Header header = req.getHeader();
-        // set req header totallenth
-        header.setTotalLen(ThronesTCPConstant.THRONES_MSG_HEADER_LEN + body.length);
+        // header totallenth
+        int headerLenth = ThronesTCPConstant.THRONES_MSG_HEADER_LEN + body.length;
 
         // write header bytes
         byte[] headerBytes = new byte[ThronesTCPConstant.THRONES_MSG_HEADER_LEN];
@@ -62,15 +62,14 @@ public class ThroneCodec extends AbstractCodec {
         }
 
         headerBytes[7] = MsgCommandEnum.PROCEDURE_REQ.getCommand();
-        headerBytes[9] = (byte) (header.isTwoWay() ? 0 : 1);
+        headerBytes[9] = (byte) (header.isTwoWay() ? TWO_WAY : ONE_WAY);
         NumberBytesConvertUtils.long2bytes(header.getSequence(), headerBytes, 10);
-        NumberBytesConvertUtils.int2bytes(header.getTotalLen(), headerBytes, 18);
+        NumberBytesConvertUtils.int2bytes(headerLenth, headerBytes, 18);
 
-
-        byteBuf.writerIndex(ThronesTCPConstant.THRONES_MSG_HEADER_LEN);
+        // write header
         byteBuf.writeBytes(headerBytes);
 
-        byteBuf.writerIndex(body.length);
+        // write body
         byteBuf.writeBytes(body);
     }
 
@@ -83,8 +82,8 @@ public class ThroneCodec extends AbstractCodec {
         byte[] body = serializer.serialize(result);
 
         Header header = resp.getHeader();
-        // set req header totallenth
-        header.setTotalLen(ThronesTCPConstant.THRONES_MSG_HEADER_LEN + body.length);
+        // header totallenth
+        int headerLenth = ThronesTCPConstant.THRONES_MSG_HEADER_LEN + body.length;
 
         // write header bytes
         byte[] headerBytes = new byte[ThronesTCPConstant.THRONES_MSG_HEADER_LEN];
@@ -99,21 +98,31 @@ public class ThroneCodec extends AbstractCodec {
         headerBytes[8] = StringUtils.isBlank(errorMsg) ? MsgStatusEnum.SUCCESS.getStatus() : MsgStatusEnum.ERROR.getStatus();
         headerBytes[9] = (byte) (header.isTwoWay() ? 0 : 1);
         NumberBytesConvertUtils.long2bytes(header.getSequence(), headerBytes, 10);
-        NumberBytesConvertUtils.int2bytes(header.getTotalLen(), headerBytes, 18);
+        NumberBytesConvertUtils.int2bytes(headerLenth, headerBytes, 18);
 
-
-        byteBuf.writerIndex(ThronesTCPConstant.THRONES_MSG_HEADER_LEN);
         byteBuf.writeBytes(headerBytes);
 
-        byteBuf.writerIndex(body.length);
         byteBuf.writeBytes(body);
-
     }
 
     @Override
-    public Object decode(Netty4ChannelChain channelChain, ByteBuf byteBuf, List<Object> out) {
+    public Object decode(Netty4ChannelChain channelChain, ByteBuf byteBuf) {
         int readable = byteBuf.readableBytes();
         byte[] header = new byte[Math.min(readable, ThronesTCPConstant.THRONES_MSG_HEADER_LEN)];
+        byteBuf.readBytes(header);
+        byte command = header[7];
+        if (MsgCommandEnum.PROCEDURE_REQ.getCommand() == command) {
+            return decodeReq(channelChain, byteBuf, header);
+        } else {
+            return decodeResp(channelChain, byteBuf, header);
+        }
+    }
+
+    private ProcedureRespMsg decodeResp(Netty4ChannelChain channelChain, ByteBuf byteBuf, byte[] header) {
+        return null;
+    }
+
+    private ProcedureReqMsg decodeReq(Netty4ChannelChain channelChain, ByteBuf byteBuf, byte[] header) {
 
         return null;
     }

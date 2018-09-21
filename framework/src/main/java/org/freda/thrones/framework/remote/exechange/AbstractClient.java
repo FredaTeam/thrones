@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.remote.exchange;
+package org.freda.thrones.framework.remote.exechange;
 
 import lombok.extern.slf4j.Slf4j;
 import org.freda.thrones.framework.common.URL;

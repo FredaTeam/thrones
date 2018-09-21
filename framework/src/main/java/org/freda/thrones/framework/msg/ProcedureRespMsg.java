@@ -1,5 +1,6 @@
 package org.freda.thrones.framework.msg;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.freda.thrones.framework.constants.ThronesTCPConstant;
 import org.freda.thrones.framework.enums.MsgCommandEnum;
 import org.freda.thrones.framework.enums.MsgStatusEnum;
@@ -138,5 +139,14 @@ public class ProcedureRespMsg extends BaseMsg {
 
     public void setReturnNotNull(boolean returnVoid) {
         this.returnVoid = returnVoid;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("errorMsg", errorMsg)
+                .append("result", result)
+                .append("returnVoid", returnVoid)
+                .toString();
     }
 }

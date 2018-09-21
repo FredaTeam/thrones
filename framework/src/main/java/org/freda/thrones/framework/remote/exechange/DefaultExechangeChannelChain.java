@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.remote.exchange;
+package org.freda.thrones.framework.remote.exechange;
 
 import lombok.extern.slf4j.Slf4j;
 import org.freda.thrones.framework.common.URL;
@@ -18,15 +18,15 @@ import java.util.Objects;
  * Create on 2018/8/18 14:18
  */
 @Slf4j
-public class DefaultExchangeChannelChain implements ExchangeChannelChain {
+public class DefaultExechangeChannelChain implements ExechangeChannelChain {
 
     private final ChannelChain channelChain;
 
-    private static final String CHANNEL_KEY = DefaultExchangeChannelChain.class.getName() + ".CHANNEL";
+    private static final String CHANNEL_KEY = DefaultExechangeChannelChain.class.getName() + ".CHANNEL";
 
     private volatile boolean closed = false;
 
-    public DefaultExchangeChannelChain(ChannelChain channelChain) {
+    public DefaultExechangeChannelChain(ChannelChain channelChain) {
         if (Objects.isNull(channelChain)) {
             throw new IllegalArgumentException("channelChain is null");
         }
@@ -34,18 +34,18 @@ public class DefaultExchangeChannelChain implements ExchangeChannelChain {
     }
 
 
-    public static DefaultExchangeChannelChain getOrAddChannel(ChannelChain channelChain) {
+    public static DefaultExechangeChannelChain getOrAddChannel(ChannelChain channelChain) {
         if (channelChain == null) {
             return null;
         }
-        DefaultExchangeChannelChain exchangeChannelChain = (DefaultExchangeChannelChain) channelChain.getAttribute(CHANNEL_KEY);
-        if (exchangeChannelChain == null) {
-            exchangeChannelChain = new DefaultExchangeChannelChain(channelChain);
+        DefaultExechangeChannelChain exechangeChannelChain = (DefaultExechangeChannelChain) channelChain.getAttribute(CHANNEL_KEY);
+        if (exechangeChannelChain == null) {
+            exechangeChannelChain = new DefaultExechangeChannelChain(channelChain);
             if (channelChain.isConnected()) {
-                channelChain.setAttribute(CHANNEL_KEY, exchangeChannelChain);
+                channelChain.setAttribute(CHANNEL_KEY, exechangeChannelChain);
             }
         }
-        return exchangeChannelChain;
+        return exechangeChannelChain;
     }
 
     public static void removeChannelIfDisconnected(ChannelChain channelChain) {
@@ -78,7 +78,7 @@ public class DefaultExchangeChannelChain implements ExchangeChannelChain {
     }
 
     @Override
-    public ExchangeHandler getExchangeHandler() {
+    public ExechangeHandler getExechangeHandler() {
         return null;
     }
 
@@ -185,7 +185,7 @@ public class DefaultExchangeChannelChain implements ExchangeChannelChain {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DefaultExchangeChannelChain that = (DefaultExchangeChannelChain) o;
+        DefaultExechangeChannelChain that = (DefaultExechangeChannelChain) o;
 
         return channelChain.equals(that.channelChain);
     }

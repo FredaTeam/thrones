@@ -57,6 +57,7 @@ public class Netty4CodecHandler {
             ProcedureRespMsg respMsg = new ProcedureRespMsg();
 
             respMsg.getHeader().setStatus(MsgStatusEnum.SUCCESS);
+            respMsg.getHeader().setSequence(1);
             respMsg.setResult("aaa");
             out.add(respMsg);
         }

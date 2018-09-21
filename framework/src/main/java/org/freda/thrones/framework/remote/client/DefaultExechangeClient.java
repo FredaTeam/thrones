@@ -2,9 +2,9 @@ package org.freda.thrones.framework.remote.client;
 
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
-import org.freda.thrones.framework.remote.exchange.DefaultExchangeChannelChain;
-import org.freda.thrones.framework.remote.exchange.ExchangeChannelChain;
-import org.freda.thrones.framework.remote.exchange.ExchangeHandler;
+import org.freda.thrones.framework.remote.exechange.DefaultExechangeChannelChain;
+import org.freda.thrones.framework.remote.exechange.ExechangeChannelChain;
+import org.freda.thrones.framework.remote.exechange.ExechangeHandler;
 import org.freda.thrones.framework.remote.future.CommonFuture;
 
 import java.net.InetSocketAddress;
@@ -12,16 +12,16 @@ import java.net.InetSocketAddress;
 /**
  * Create on 2018/8/18 14:15
  */
-public class DefaultExchangeClient implements ExchangeClient {
+public class DefaultExechangeClient implements ExechangeClient {
 
     private final Client client;
 
-    private final ExchangeChannelChain channelChain;
+    private final ExechangeChannelChain channelChain;
 
     // todo need to complete heartbeat task
-    public DefaultExchangeClient(Client client, boolean needHeartbeat) {
+    public DefaultExechangeClient(Client client, boolean needHeartbeat) {
         this.client = client;
-        this.channelChain = new DefaultExchangeChannelChain(client);
+        this.channelChain = new DefaultExechangeChannelChain(client);
 
         if (needHeartbeat) {
             startHeartBeatTask();
@@ -52,8 +52,8 @@ public class DefaultExchangeClient implements ExchangeClient {
     }
 
     @Override
-    public ExchangeHandler getExchangeHandler() {
-        return channelChain.getExchangeHandler();
+    public ExechangeHandler getExechangeHandler() {
+        return channelChain.getExechangeHandler();
     }
 
     @Override

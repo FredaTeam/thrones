@@ -12,12 +12,12 @@ import org.freda.thrones.framework.manager.export.ThronesExporter;
 import org.freda.thrones.framework.manager.invoke.Invoker;
 import org.freda.thrones.framework.manager.invoke.ThronesInvoker;
 import org.freda.thrones.framework.remote.ChannelChain;
-import org.freda.thrones.framework.remote.client.ExechangeClient;
-import org.freda.thrones.framework.remote.exechange.AbstractExechangeHandler;
-import org.freda.thrones.framework.remote.exechange.ExechangeChannelChain;
-import org.freda.thrones.framework.remote.exechange.ExechangeHandler;
-import org.freda.thrones.framework.remote.exechange.ExechangerKernel;
-import org.freda.thrones.framework.remote.server.ExechangeServer;
+import org.freda.thrones.framework.remote.client.ExchangeClient;
+import org.freda.thrones.framework.remote.exchange.AbstractExchangeHandler;
+import org.freda.thrones.framework.remote.exchange.ExchangeChannelChain;
+import org.freda.thrones.framework.remote.exchange.ExchangeHandler;
+import org.freda.thrones.framework.remote.exchange.ExchangerKernel;
+import org.freda.thrones.framework.remote.server.ExchangeServer;
 
 import java.util.Map;
 import java.util.Objects;
@@ -29,17 +29,17 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class ThronesKernel extends AbstractKernel {
 
-    // <host:port,Exechanger>
-    private final Map<String, ExechangeServer> serverMap = Maps.newConcurrentMap();
+    // <host:port,Exchanger>
+    private final Map<String, ExchangeServer> serverMap = Maps.newConcurrentMap();
 
-    private final Map<String, ExechangeClient> clientMap = Maps.newConcurrentMap();
+    private final Map<String, ExchangeClient> clientMap = Maps.newConcurrentMap();
 
     private final ConcurrentMap<String, Object> locks = Maps.newConcurrentMap();
 
-    private ExechangeHandler thronesHandler = new AbstractExechangeHandler() {
+    private ExchangeHandler thronesHandler = new AbstractExchangeHandler() {
 
         @Override
-        public CompletableFuture<Object> reply(ExechangeChannelChain channelChain, Object request) throws LinkingException {
+        public CompletableFuture<Object> reply(ExchangeChannelChain channelChain, Object request) throws LinkingException {
             if (request instanceof Invocation) {
                 Invocation inv = (Invocation) request;
                 Invoker<?> invoker = getInvoker(channelChain, inv);
@@ -64,7 +64,7 @@ public class ThronesKernel extends AbstractKernel {
         @Override
         public void onReceived(ChannelChain channelChain, Object message) throws LinkingException {
             if (message instanceof Invocation) {
-                reply((ExechangeChannelChain) channelChain, message);
+                reply((ExchangeChannelChain) channelChain, message);
             }
         }
 
@@ -79,7 +79,7 @@ public class ThronesKernel extends AbstractKernel {
         }
     };
 
-    Invoker<?> getInvoker(ChannelChain channelChain, Invocation inv) throws LinkingException {
+    private Invoker<?> getInvoker(ChannelChain channelChain, Invocation inv) throws LinkingException {
         String serviceKey = serviceKey(channelChain.getUrl());
 
         ThronesExporter<?> exporter = (ThronesExporter<?>) exporterMap.get(serviceKey);
@@ -87,6 +87,7 @@ public class ThronesKernel extends AbstractKernel {
         if (exporter == null) {
             throw new LinkingException(channelChain, "Not found exported service: " + serviceKey + " in " + exporterMap.keySet() + ", may be version or group mismatch " + ", channel: consumer: " + channelChain.getRemoteAddress() + " --> provider: " + channelChain.getLocalAddress() + ", message:" + inv);
         }
+
         return exporter.getInvoker();
     }
 
@@ -109,7 +110,7 @@ public class ThronesKernel extends AbstractKernel {
 
         boolean isServer = url.getParam(Constants.PARAMETER.IS_SERVER_KEY, true);
         if (isServer) {
-            ExechangeServer server = serverMap.get(address);
+            ExchangeServer server = serverMap.get(address);
             if (Objects.isNull(server)) {
                 server = serverMap.get(address);
                 if (Objects.isNull(server)) {
@@ -121,9 +122,9 @@ public class ThronesKernel extends AbstractKernel {
         }
     }
 
-    private ExechangeServer createServer(URL url) {
+    private ExchangeServer createServer(URL url) {
         try {
-            return ExechangerKernel.bind(url, thronesHandler);
+            return ExchangerKernel.bind(url, thronesHandler);
         } catch (LinkingException e) {
             throw new RpcException("Fail to start server(url: " + url + ") " + e.getMessage(), e);
         }
@@ -137,12 +138,12 @@ public class ThronesKernel extends AbstractKernel {
         return invoker;
     }
 
-    private ExechangeClient[] getClients(URL url) {
+    private ExchangeClient[] getClients(URL url) {
         String key = url.getAddress();
-        ExechangeClient client = clientMap.get(key);
+        ExchangeClient client = clientMap.get(key);
         if (Objects.nonNull(client)) {
             if (!client.closed()) {
-                return new ExechangeClient[]{client};
+                return new ExchangeClient[]{client};
             } else {
                 clientMap.remove(key);
             }
@@ -153,12 +154,12 @@ public class ThronesKernel extends AbstractKernel {
             clientMap.put(key, client);
             locks.remove(key);
         }
-        return new ExechangeClient[]{client};
+        return new ExchangeClient[]{client};
     }
 
-    private ExechangeClient initClient(URL url) {
+    private ExchangeClient initClient(URL url) {
         try {
-            return ExechangerKernel.connect(url, thronesHandler);
+            return ExchangerKernel.connect(url, thronesHandler);
         } catch (LinkingException e) {
             throw new RpcException("Fail to create remoting client for service(" + url + "): " + e.getMessage(), e);
         }
@@ -168,13 +169,13 @@ public class ThronesKernel extends AbstractKernel {
     @Override
     public void destroy() {
         for (String key : serverMap.keySet()) {
-            ExechangeServer server = serverMap.remove(key);
+            ExchangeServer server = serverMap.remove(key);
             if (Objects.nonNull(server)) {
                 server.close();
             }
         }
         for (String key : clientMap.keySet()) {
-            ExechangeClient client = clientMap.remove(key);
+            ExchangeClient client = clientMap.remove(key);
             if (Objects.nonNull(client)) {
                 client.close();
             }

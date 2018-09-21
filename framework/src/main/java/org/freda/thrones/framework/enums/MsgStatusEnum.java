@@ -2,7 +2,7 @@ package org.freda.thrones.framework.enums;
 
 import java.util.Arrays;
 
-public enum MsgStatusEnum
+public enum /**/MsgStatusEnum
 {
     SUCCESS((byte) 1, "success"),
 
@@ -36,4 +36,5 @@ public enum MsgStatusEnum
     public String getText() {
         return text;
     }
+
 }

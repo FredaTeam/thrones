@@ -2,10 +2,13 @@ package org.freda.thrones.framework.netty4.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.freda.thrones.framework.enums.MsgCommandEnum;
 import org.freda.thrones.framework.msg.ProcedureReqMsg;
 import org.freda.thrones.framework.serializer.HessianSerializer;
 import org.freda.thrones.framework.serializer.Serializer;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -18,10 +21,11 @@ public class ThroneCodecTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void encode() {
+    public void encode() throws IOException {
         ByteBuf byteBuf = Unpooled.buffer();
 
         ProcedureReqMsg reqMsg = new ProcedureReqMsg();
+
 
         Serializer serializer = new HessianSerializer();
 
@@ -34,7 +38,19 @@ public class ThroneCodecTest {
     }
 
     @Test
-    public void decode() {
+    public void decode() throws IOException {
+        ByteBuf byteBuf = Unpooled.buffer();
+
+        ProcedureReqMsg reqMsg = new ProcedureReqMsg();
+
+        reqMsg.setRequest("request");
+
+        codec.encode(null, byteBuf, reqMsg);
+
+        ProcedureReqMsg newReq = (ProcedureReqMsg) codec.decode(null, byteBuf);
+
+        assertEquals(MsgCommandEnum.PROCEDURE_REQ, newReq.getHeader().getCommand());
+        assertEquals("request", newReq.getRequest());
 
     }
 

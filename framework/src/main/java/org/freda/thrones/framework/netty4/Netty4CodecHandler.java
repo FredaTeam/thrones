@@ -13,6 +13,7 @@ import org.freda.thrones.framework.netty4.codec.Codec;
 import org.freda.thrones.framework.netty4.codec.ThroneCodec;
 import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -54,12 +55,16 @@ public class Netty4CodecHandler {
 
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-            ProcedureRespMsg respMsg = new ProcedureRespMsg();
-
-            respMsg.getHeader().setStatus(MsgStatusEnum.SUCCESS);
-            respMsg.getHeader().setSequence(1);
-            respMsg.setResult("aaa");
-            out.add(respMsg);
+            Channel ch = ctx.channel();
+            Netty4ChannelChain channelChain = Netty4ChannelChain.getOrAddChannel(ch, url, handler);
+            try {
+                Object msg = codec.decode(channelChain, in);
+                out.add(msg);
+            } catch (IOException e) {
+                throw e;
+            } finally {
+                Netty4ChannelChain.removeChannelIfDisconnected(ch);
+            }
         }
     }
 

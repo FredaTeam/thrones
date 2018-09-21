@@ -15,7 +15,7 @@ import org.freda.thrones.framework.constants.Constants;
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
-import org.freda.thrones.framework.remote.exechange.AbstractClient;
+import org.freda.thrones.framework.remote.exchange.AbstractClient;
 import org.freda.thrones.framework.remote.handler.HandlerKernel;
 
 import java.net.InetSocketAddress;

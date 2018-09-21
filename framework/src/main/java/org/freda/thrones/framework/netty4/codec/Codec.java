@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import org.freda.thrones.framework.netty4.Netty4ChannelChain;
 import org.freda.thrones.framework.remote.ChannelChain;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -18,10 +19,10 @@ public interface Codec {
      * because we can get additional infomation from channelchain
      * but if we use io.netty.channel.channel, we get nothing
      */
-    void encode(Netty4ChannelChain channelChain, ByteBuf byteBuf, Object msg);
+    void encode(Netty4ChannelChain channelChain, ByteBuf byteBuf, Object msg) throws IOException;
 
     /**
      * decode msg
      */
-    Object decode(Netty4ChannelChain channelChain, ByteBuf byteBuf);
+    Object decode(Netty4ChannelChain channelChain, ByteBuf byteBuf) throws IOException;
 }

@@ -19,7 +19,7 @@ public class Netty4ClientHandler extends ChannelDuplexHandler {
 
     public Netty4ClientHandler(URL url, ChannelChainHandler channelChainHandler) {
 
-        if (url == null || channelChainHandler == null){
+        if (url == null || channelChainHandler == null) {
             throw new IllegalArgumentException("url or channelChainHandler can not be null.");
         }
         this.channelChainHandler = channelChainHandler;
@@ -34,7 +34,7 @@ public class Netty4ClientHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Netty4ChannelChain channelChain = Netty4ChannelChain.getOrAddChannel(ctx.channel(),this.url, this.channelChainHandler);
+        Netty4ChannelChain channelChain = Netty4ChannelChain.getOrAddChannel(ctx.channel(), this.url, this.channelChainHandler);
         try {
             channelChainHandler.onConnected(channelChain);
         } finally {
@@ -51,7 +51,7 @@ public class Netty4ClientHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        Netty4ChannelChain channelChain = Netty4ChannelChain.getOrAddChannel(ctx.channel(),this.url, this.channelChainHandler);
+        Netty4ChannelChain channelChain = Netty4ChannelChain.getOrAddChannel(ctx.channel(), this.url, this.channelChainHandler);
         try {
             channelChainHandler.onDisConnected(channelChain);
         } finally {
@@ -68,7 +68,7 @@ public class Netty4ClientHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        Netty4ChannelChain channelChain = Netty4ChannelChain.getOrAddChannel(ctx.channel(),this.url, this.channelChainHandler);
+        Netty4ChannelChain channelChain = Netty4ChannelChain.getOrAddChannel(ctx.channel(), this.url, this.channelChainHandler);
         try {
             channelChainHandler.onReceived(channelChain, msg);
         } finally {
@@ -84,11 +84,11 @@ public class Netty4ClientHandler extends ChannelDuplexHandler {
         try {
             //if write req error.
             //then return error resp
-            if (promise != null && msg instanceof ProcedureReqMsg){
-                ProcedureReqMsg reqMsg = (ProcedureReqMsg)msg;
+            if (promise.cause() != null && msg instanceof ProcedureReqMsg) {
+                ProcedureReqMsg reqMsg = (ProcedureReqMsg) msg;
                 ProcedureRespMsg respMsg = new ProcedureRespMsg(MsgStatusEnum.ERROR,
                         reqMsg.getHeader().getSequence(),
-                        "", null, Boolean.FALSE);
+                        promise.cause().getMessage(), null, Boolean.FALSE);
                 channelChainHandler.onReceived(channelChain, respMsg);
             } else {
                 channelChainHandler.onSent(channelChain, msg);
@@ -101,7 +101,7 @@ public class Netty4ClientHandler extends ChannelDuplexHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        Netty4ChannelChain channelChain = Netty4ChannelChain.getOrAddChannel(ctx.channel(),this.url, this.channelChainHandler);
+        Netty4ChannelChain channelChain = Netty4ChannelChain.getOrAddChannel(ctx.channel(), this.url, this.channelChainHandler);
         try {
             channelChainHandler.onError(channelChain, cause);
         } finally {

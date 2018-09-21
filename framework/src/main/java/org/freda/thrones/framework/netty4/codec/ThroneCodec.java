@@ -15,10 +15,13 @@ import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.serializer.HessianSerializer;
 import org.freda.thrones.framework.utils.NumberBytesConvertUtils;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
  * Create on 2018/9/20 11:38
+ * <p>
+ * todo fix me please ~.~
  */
 @Slf4j
 public class ThroneCodec extends AbstractCodec {
@@ -31,13 +34,20 @@ public class ThroneCodec extends AbstractCodec {
      * 7 + 1 + 1 + 1 + 8 + 4 = 22
      */
     @Override
-    public void encode(Netty4ChannelChain channelChain, ByteBuf byteBuf, Object msg) {
+    public void encode(Netty4ChannelChain channelChain, ByteBuf byteBuf, Object msg) throws IOException {
         if (msg instanceof ProcedureReqMsg) {
+
             encodeReq(channelChain, byteBuf, (ProcedureReqMsg) msg);
+
         } else if (msg instanceof ProcedureRespMsg) {
+
             encodeResp(channelChain, byteBuf, (ProcedureRespMsg) msg);
+
         } else {
-            log.warn("unknow msg type");
+
+            log.warn("unknown msg type");
+            throw new IOException("unknown msg type");
+
         }
 
     }
@@ -96,7 +106,7 @@ public class ThroneCodec extends AbstractCodec {
 
         headerBytes[7] = MsgCommandEnum.PROCEDURE_RES.getCommand();
         headerBytes[8] = StringUtils.isBlank(errorMsg) ? MsgStatusEnum.SUCCESS.getStatus() : MsgStatusEnum.ERROR.getStatus();
-        headerBytes[9] = (byte) (header.isTwoWay() ? 0 : 1);
+        headerBytes[9] = (byte) (header.isTwoWay() ? TWO_WAY : ONE_WAY);
         NumberBytesConvertUtils.long2bytes(header.getSequence(), headerBytes, 10);
         NumberBytesConvertUtils.int2bytes(headerLenth, headerBytes, 18);
 
@@ -106,24 +116,59 @@ public class ThroneCodec extends AbstractCodec {
     }
 
     @Override
-    public Object decode(Netty4ChannelChain channelChain, ByteBuf byteBuf) {
+    public Object decode(Netty4ChannelChain channelChain, ByteBuf byteBuf) throws IOException {
         int readable = byteBuf.readableBytes();
         byte[] header = new byte[Math.min(readable, ThronesTCPConstant.THRONES_MSG_HEADER_LEN)];
         byteBuf.readBytes(header);
         byte command = header[7];
         if (MsgCommandEnum.PROCEDURE_REQ.getCommand() == command) {
+
             return decodeReq(channelChain, byteBuf, header);
-        } else {
-            return decodeResp(channelChain, byteBuf, header);
+
         }
+        if (MsgCommandEnum.PROCEDURE_RES.getCommand() == command) {
+
+            return decodeResp(channelChain, byteBuf, header);
+
+        }
+        log.warn("unknown command type");
+        throw new IOException("unknown command type");
     }
 
-    private ProcedureRespMsg decodeResp(Netty4ChannelChain channelChain, ByteBuf byteBuf, byte[] header) {
-        return null;
+    private ProcedureRespMsg decodeResp(Netty4ChannelChain channelChain, ByteBuf byteBuf, byte[] headerBytes) {
+        Header header = new Header();
+        header.setStatus(MsgStatusEnum.statusOf(headerBytes[8]));
+        header.setSequence(NumberBytesConvertUtils.bytes2long(headerBytes, 10));
+        header.setTwoWay(headerBytes[9] == TWO_WAY);
+
+        int bodyLength = NumberBytesConvertUtils.bytes2int(headerBytes, 18) - ThronesTCPConstant.THRONES_MSG_HEADER_LEN;
+
+        byte[] body = new byte[bodyLength];
+        byteBuf.readBytes(body);
+        HessianSerializer serializer = new HessianSerializer();
+        Object result = serializer.deserialize(body);
+
+        ProcedureRespMsg respMsg = new ProcedureRespMsg(header);
+        respMsg.setResult(result);
+        return respMsg;
     }
 
-    private ProcedureReqMsg decodeReq(Netty4ChannelChain channelChain, ByteBuf byteBuf, byte[] header) {
+    private ProcedureReqMsg decodeReq(Netty4ChannelChain channelChain, ByteBuf byteBuf, byte[] headerBytes) {
 
-        return null;
+        Header header = new Header();
+        header.setCommand(MsgCommandEnum.commandOf(headerBytes[7]));
+        header.setSequence(NumberBytesConvertUtils.bytes2long(headerBytes, 10));
+        header.setTwoWay(headerBytes[9] == TWO_WAY);
+
+        int bodyLength = NumberBytesConvertUtils.bytes2int(headerBytes, 18) - ThronesTCPConstant.THRONES_MSG_HEADER_LEN;
+
+        byte[] body = new byte[bodyLength];
+        byteBuf.readBytes(body);
+        HessianSerializer serializer = new HessianSerializer();
+        Object request = serializer.deserialize(body);
+
+        ProcedureReqMsg reqMsg = new ProcedureReqMsg(header);
+        reqMsg.setRequest(request);
+        return reqMsg;
     }
 }

@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.remote.exechange;
+package org.freda.thrones.framework.remote.exchange;
 
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
@@ -6,9 +6,9 @@ import org.freda.thrones.framework.remote.Closable;
 import org.freda.thrones.framework.remote.future.CommonFuture;
 
 /**
- * actions define of exechange
+ * actions define of exchange
  */
-public interface ExechangeChannelChain extends ChannelChain, Closable {
+public interface ExchangeChannelChain extends ChannelChain, Closable {
 
     /**
      * send request
@@ -23,7 +23,7 @@ public interface ExechangeChannelChain extends ChannelChain, Closable {
     /**
      * get message handler
      */
-    ExechangeHandler getExechangeHandler();
+    ExchangeHandler getExchangeHandler();
 
     /**
      * close channel chain

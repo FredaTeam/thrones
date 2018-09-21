@@ -10,7 +10,7 @@ consul as registry center. Including support tracer,monitor,cluster,circuit-brea
 |                :----:                   |    :----:     |  :----:   | :----:  |
 | [Transport Layer](#transport-layer)                         |    doing      |   Rally   |    -    |
 | [Encode&Decode](#encode-decode)                   |    doing      |   Rally   |    -    |
-| [Exehange Layer](#exehange-layer)                      |    doing      |  Michael  |    -    |
+| [Exchange Layer](#exchange-layer)                      |    doing      |  Michael  |    -    |
 | [HeartBeat](#heartbeat)                           |    doing      |  Michael  |    -    |
 | [ServiceKernel](#servicekernel)                     |    doing      |  Michael  |    -    |
 | [Registry Layer](#registry-layer)                   |    doing      |  Michael  |    -    |
@@ -28,7 +28,7 @@ consul as registry center. Including support tracer,monitor,cluster,circuit-brea
 # Encode Decode
 
 
-# Exehange Layer
+# Exchange Layer
 
 
 # HeartBeat 

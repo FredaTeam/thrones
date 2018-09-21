@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.remote.exechange;
+package org.freda.thrones.framework.remote.exchange;
 
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;

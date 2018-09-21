@@ -167,10 +167,6 @@ public class Header implements Serializable {
         this.magic = magic;
     }
 
-    public void setSequence(Long sequence) {
-        this.sequence = sequence;
-    }
-
     private static volatile AtomicLong seq = new AtomicLong(0);
 
     private long getSeq() {

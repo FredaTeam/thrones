@@ -66,27 +66,27 @@ public class RpcInvocation implements Invocation, Serializable {
 
     @Override
     public String getMethodName() {
-        return null;
+        return methodName;
     }
 
     @Override
     public Class<?>[] getParameterTypes() {
-        return new Class[0];
+        return parameterTypes;
     }
 
     @Override
     public Object[] getArguments() {
-        return new Object[0];
+        return arguments;
     }
 
     @Override
     public Map<String, String> getAttachments() {
-        return null;
+        return attachments;
     }
 
     @Override
     public Invoker<?> getInvoker() {
-        return null;
+        return invoker;
     }
 
     public void setMethodName(String methodName) {

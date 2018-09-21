@@ -7,4 +7,5 @@ public interface DemoService {
 
     String echo(String str);
 
+    void print(String str);
 }

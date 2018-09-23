@@ -2,15 +2,20 @@ package org.freda.thrones.registry;
 
 
 import com.google.common.net.HostAndPort;
+import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.HealthClient;
 import com.orbitz.consul.NotRegisteredException;
 import com.orbitz.consul.model.ConsulResponse;
+import com.orbitz.consul.model.agent.ImmutableRegCheck;
+import com.orbitz.consul.model.agent.ImmutableRegistration;
 import com.orbitz.consul.model.health.ServiceHealth;
+import org.junit.Test;
 
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -59,32 +64,59 @@ public class ConsulRegistryTest {
 //        agentClient.pass(serviceId);
 
 
+    }
+
+    @Test
+    public void test_register_service() throws InterruptedException {
         Consul consul = Consul.builder().withHostAndPort(HostAndPort.fromString("localhost:" + 8500)).build();
-//        AgentClient agent = consul.agentClient();
-//
+        AgentClient agent = consul.agentClient();
+
+        ImmutableRegCheck check = ImmutableRegCheck.builder().tcp("localhost:" + 8080).interval("3s").build();
+        ImmutableRegistration.Builder builder = ImmutableRegistration.builder();
+
+        String serviceName = UUID.randomUUID().toString();
+        String serviceId = UUID.randomUUID().toString();
+
+        builder.id(serviceId)
+                .name(serviceName)
+                .addTags("v1")
+                .address("localhost")
+                .port(8080)
+                .addChecks(check);
+
+        agent.register(builder.build());
+
+    }
+
+
+    @Test
+    public void test_unregister_service(){
+        Consul consul = Consul.builder().withHostAndPort(HostAndPort.fromString("localhost:" + 8500)).build();
+        AgentClient agent = consul.agentClient();
+
 //        ImmutableRegCheck check = ImmutableRegCheck.builder().tcp("localhost:" + 8080).interval("3s").build();
 //        ImmutableRegistration.Builder builder = ImmutableRegistration.builder();
-//        builder.id("mikeservice_id")
-//                .name("mikeservice")
-//                .addTags("v1")
-//                .address("localhost")
-//                .port(8080)
-//                .addChecks(check);
 //
-//        agent.register(builder.build());
+//        String serviceName = "753d7292-6c85-4eb8-83a1-dc8ff1bae6b0";
+//        HealthClient client = consul.healthClient();
+//        ConsulResponse<List<ServiceHealth>> object = client.getHealthyServiceInstances(serviceName);
 
 
+        agent.deregister("9ef7f3a0-0870-433b-8128-fe4dd6f5539d");
+
+    }
+
+
+
+    @Test
+    public void test_getServiceInstance() throws InterruptedException {
+        Consul consul = Consul.builder().withHostAndPort(HostAndPort.fromString("localhost:" + 8500)).build();
         HealthClient client = consul.healthClient();
-        String name = "mikeservice";
+        String name = "myService";
         ConsulResponse<List<ServiceHealth>> object = client.getAllServiceInstances(name);
 
         List<ServiceHealth> serviceHealths = object.getResponse();
-        serviceHealths.forEach(it -> System.out.println(it.getService().getId()+"  "+it.getService().getAddress() + ":" + it.getService().getPort()));
-
-//        addHook();
-
-        LOCK.lock();
-        STOP.await();
+        serviceHealths.forEach(it -> System.out.println("serviceId: "+it.getService().getId()+"  check: "+it.getChecks().size() + "  address: " + it.getService().getAddress() + ":" + it.getService().getPort()));
     }
 
     private static void addHook() {

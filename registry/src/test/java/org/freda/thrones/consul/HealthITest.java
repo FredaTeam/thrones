@@ -49,7 +49,7 @@ public class HealthITest extends BaseIntegrationTest {
         assertHealth(serviceId, response);
 
         client.agentClient().deregister(serviceId);
-        client.agentClient().deregister(serviceId2);
+        client2.agentClient().deregister(serviceId2);
     }
 
     @Test

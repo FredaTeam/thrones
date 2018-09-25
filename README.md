@@ -1,4 +1,5 @@
-# Thrones [![Build Status](https://travis-ci.org/mikefreemanNice/thrones.svg?branch=master)](https://travis-ci.org/mikefreemanNice/thrones)
+# Thrones 
+[![Build Status](https://travis-ci.org/FredaTeam/thrones.svg?branch=master)](https://travis-ci.org/FredaTeam/thrones)
 
 # Introduction
 Thrones is a rpc framework integrate with netty as communicate layer,hessian as serializable framework,

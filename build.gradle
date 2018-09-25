@@ -22,11 +22,14 @@ allprojects {
 }
 
 def junitVersion = '4.12'
+def junitParamVersion = '1.1.1'
+def mockitoVersion = '2.22.0'
 def slf4jApiVersion = '1.7.25'
 def nettyVersion = '4.1.28.Final'
 def lombokVersion = '1.18.2'
 def javaasistVersion = '3.12.1.GA'
 def apacheCommonLangVersion = '3.4'
+def commonCodecVersion = '1.10'
 
 subprojects {
 
@@ -50,9 +53,12 @@ subprojects {
         compile group: 'io.netty', name: 'netty-all', version: nettyVersion
         compile group: 'javassist', name: 'javassist', version: javaasistVersion
         compile group: 'org.apache.commons', name: 'commons-lang3', version: apacheCommonLangVersion
+        compile group: 'commons-codec', name: 'commons-codec', version: commonCodecVersion
 
         // TEST
         testCompile group: 'junit', name: 'junit', version: junitVersion
+        testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: junitParamVersion
+        testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
 
         compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
     }

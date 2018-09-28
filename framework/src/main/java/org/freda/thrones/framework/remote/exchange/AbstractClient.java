@@ -9,7 +9,7 @@ import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 import org.freda.thrones.framework.remote.ThronesThreadFactory;
 import org.freda.thrones.framework.remote.client.Client;
-import org.freda.thrones.framework.utils.NetUtils;
+import org.freda.thrones.common.utils.NetUtils;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ScheduledFuture;

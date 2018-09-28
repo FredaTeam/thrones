@@ -20,7 +20,7 @@ import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
 import org.freda.thrones.framework.remote.handler.HandlerKernel;
 import org.freda.thrones.framework.remote.server.AbstractServer;
-import org.freda.thrones.framework.utils.NetUtils;
+import org.freda.thrones.common.utils.NetUtils;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;

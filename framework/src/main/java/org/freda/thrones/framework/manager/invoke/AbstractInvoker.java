@@ -8,7 +8,7 @@ import org.freda.thrones.framework.manager.Invocation;
 import org.freda.thrones.framework.manager.Result;
 import org.freda.thrones.framework.manager.RpcInvocation;
 import org.freda.thrones.framework.manager.RpcResult;
-import org.freda.thrones.framework.utils.NetUtils;
+import org.freda.thrones.common.utils.NetUtils;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;

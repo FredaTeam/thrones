@@ -1,18 +1,6 @@
-plugins {
-    id 'java'
-}
-
-
 jar {
     baseName = 'thrones-registry'
     version = '1.0.1'
-}
-
-
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {

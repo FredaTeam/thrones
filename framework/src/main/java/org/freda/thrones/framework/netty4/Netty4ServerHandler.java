@@ -11,7 +11,7 @@ import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.framework.exceptions.LinkingException;
 import org.freda.thrones.framework.remote.ChannelChain;
 import org.freda.thrones.framework.remote.handler.ChannelChainHandler;
-import org.freda.thrones.framework.utils.NetUtils;
+import org.freda.thrones.common.utils.NetUtils;
 
 import java.net.InetSocketAddress;
 import java.util.Map;

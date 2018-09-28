@@ -1,7 +1,7 @@
-package org.freda.thrones.framework.utils;
+package org.freda.thrones.common.utils;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.freda.thrones.common.annotation.Order;
 
 import java.util.Comparator;
 import java.util.List;
@@ -26,9 +26,17 @@ public class WrapperUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T> T createInstance(Class<?> clazz, List<String> packagePaths) throws Throwable {
-        Class<?> interfaceClazz = clazz.getInterfaces()[0];
-        if (interfaceClazz == null) {
-            throw new RuntimeException(clazz.getSimpleName() + "has no interface");
+        Class<?> interfaceClass;
+        Class<?>[] interfaceClazz = clazz.getInterfaces();
+        if (interfaceClazz.length == 0) {
+            Class<?>[] supInerfaceClazz = clazz.getSuperclass().getInterfaces();
+            if (supInerfaceClazz.length == 0) {
+                throw new RuntimeException(clazz.getSimpleName() + "has no interface");
+            } else {
+                interfaceClass = supInerfaceClazz[0];
+            }
+        }else{
+            interfaceClass = interfaceClazz[0];
         }
 
         T cacheInstance = (T) CLASS_MAP.get(clazz);
@@ -36,7 +44,7 @@ public class WrapperUtils {
 
             cacheInstance = (T) clazz.newInstance();
 
-            Set<Class<?>> wrapperClasses = laodClass(interfaceClazz, packagePaths);
+            Set<Class<?>> wrapperClasses = laodClass(interfaceClass, packagePaths);
 
             if (wrapperClasses != null && !wrapperClasses.isEmpty()) {
 
@@ -47,7 +55,7 @@ public class WrapperUtils {
                 ).collect(Collectors.toSet());
 
                 for (Class<?> wrapperClass : wrapperClasses) {
-                    cacheInstance = (T) wrapperClass.getConstructor(interfaceClazz).newInstance(cacheInstance);
+                    cacheInstance = (T) wrapperClass.getConstructor(interfaceClass).newInstance(cacheInstance);
                 }
             }
 

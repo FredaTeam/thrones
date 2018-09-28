@@ -3,7 +3,7 @@ package org.freda.thrones.framework.msg;
 import org.freda.thrones.framework.constants.ThronesTCPConstant;
 import org.freda.thrones.framework.enums.MsgCommandEnum;
 import org.freda.thrones.framework.enums.MsgStatusEnum;
-import org.freda.thrones.framework.utils.NumberBytesConvertUtils;
+import org.freda.thrones.common.utils.NumberBytesConvertUtils;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;

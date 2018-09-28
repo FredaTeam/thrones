@@ -25,9 +25,7 @@ def junitVersion = '4.12'
 def junitParamVersion = '1.1.1'
 def mockitoVersion = '2.22.0'
 def slf4jApiVersion = '1.7.25'
-def nettyVersion = '4.1.28.Final'
 def lombokVersion = '1.18.2'
-def javaasistVersion = '3.12.1.GA'
 def apacheCommonLangVersion = '3.4'
 def commonCodecVersion = '1.10'
 
@@ -50,10 +48,9 @@ subprojects {
         compile fileTree(dir: 'libs', include: '*.jar')
         compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jApiVersion
         compile group: 'org.slf4j', name: 'slf4j-simple', version: slf4jApiVersion
-        compile group: 'io.netty', name: 'netty-all', version: nettyVersion
-        compile group: 'javassist', name: 'javassist', version: javaasistVersion
         compile group: 'org.apache.commons', name: 'commons-lang3', version: apacheCommonLangVersion
         compile group: 'commons-codec', name: 'commons-codec', version: commonCodecVersion
+        compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
 
         // TEST
         testCompile group: 'junit', name: 'junit', version: junitVersion

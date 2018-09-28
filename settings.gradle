@@ -1,3 +1,6 @@
 rootProject.name = 'thrones'
 include 'framework'
 include 'registry'
+include 'config'
+include 'common'
+

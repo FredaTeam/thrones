@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.utils;
+package org.freda.thrones.common.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

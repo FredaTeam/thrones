@@ -1,0 +1,8 @@
+jar {
+    baseName = 'thrones-config'
+    version = '1.0.1'
+}
+
+dependencies {
+    compile project(':common')
+}

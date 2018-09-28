@@ -3,11 +3,10 @@ jar {
     version = '1.0.1'
 }
 
-
 dependencies {
 
     compile group: 'com.caucho', name: 'hessian', version: '4.0.51'
-
-    compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
-
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.28.Final'
+    compile group: 'javassist', name: 'javassist', version: '3.12.1.GA'
+    compile project(':common')
 }

@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.utils;
+package org.freda.thrones.common.utils;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;

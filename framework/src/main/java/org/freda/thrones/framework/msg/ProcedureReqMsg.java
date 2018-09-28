@@ -2,7 +2,7 @@ package org.freda.thrones.framework.msg;
 
 import org.freda.thrones.framework.constants.ThronesTCPConstant;
 import org.freda.thrones.framework.serializer.SerializerFactory;
-import org.freda.thrones.framework.utils.NumberBytesConvertUtils;
+import org.freda.thrones.common.utils.NumberBytesConvertUtils;
 
 public class ProcedureReqMsg extends BaseMsg {
 

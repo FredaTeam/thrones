@@ -3,12 +3,11 @@ package org.freda.thrones.framework.common;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import org.freda.thrones.framework.constants.Constants;
-import org.freda.thrones.framework.utils.NetUtils;
+import org.freda.thrones.common.utils.NetUtils;
 
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

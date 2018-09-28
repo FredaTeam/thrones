@@ -1,0 +1,7 @@
+jar {
+    baseName = 'thrones-common'
+    version = '1.0.1'
+}
+
+dependencies {
+}

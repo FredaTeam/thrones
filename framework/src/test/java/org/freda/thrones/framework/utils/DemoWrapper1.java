@@ -1,13 +1,15 @@
 package org.freda.thrones.framework.utils;
 
 
+import org.freda.thrones.common.annotation.Order;
+
 /**
  * Create on 2018/9/7 17:04
  */
 @Order(1)
 public class DemoWrapper1 implements DemoService {
 
-    private DemoService demoService;
+    private final DemoService demoService;
 
     public DemoWrapper1(DemoService demoService) {
         this.demoService = demoService;

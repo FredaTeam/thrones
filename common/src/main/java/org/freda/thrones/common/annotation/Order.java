@@ -1,4 +1,4 @@
-package org.freda.thrones.framework.utils;
+package org.freda.thrones.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

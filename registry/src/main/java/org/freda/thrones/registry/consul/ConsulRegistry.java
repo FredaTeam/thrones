@@ -2,7 +2,7 @@ package org.freda.thrones.registry.consul;
 
 import org.freda.thrones.framework.common.URL;
 import org.freda.thrones.registry.NotifyListener;
-import org.freda.thrones.registry.support.AbstractRegistry;
+import org.freda.thrones.registry.AbstractRegistry;
 
 import java.util.List;
 

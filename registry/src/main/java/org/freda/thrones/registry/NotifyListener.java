@@ -12,7 +12,6 @@ public interface NotifyListener {
     /**
      * when a service changed, this listener will notify its subscribers
      * <p>
-     * <p>
      * the urls is searched as follow method
      *
      * @see Registry#lookup(org.freda.thrones.framework.common.URL)

@@ -82,6 +82,7 @@ public class ConsulRegistryTest {
                 .addTags("v1")
                 .address("localhost")
                 .port(8080)
+                .check(check)
                 .addChecks(check);
 
         agent.register(builder.build());

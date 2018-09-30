@@ -1,4 +1,4 @@
-package org.freda.thrones.registry.support;
+package org.freda.thrones.registry;
 
 import org.freda.thrones.registry.Registry;
 

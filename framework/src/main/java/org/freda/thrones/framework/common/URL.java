@@ -7,8 +7,11 @@ import org.freda.thrones.common.utils.NetUtils;
 
 import java.io.Serializable;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -50,10 +53,12 @@ public class URL implements Serializable {
      */
     private Map<String, String> params;
 
-    private volatile transient String ip;
-
     // ==============cache==============
     private volatile transient Map<String, Number> numbers;
+
+    private volatile transient String ip;
+
+    private volatile transient String full;
 
 
     public URL(String protocol, String host, int port) {
@@ -159,6 +164,99 @@ public class URL implements Serializable {
             host = url;
         }
         return new URL(protocol, secret, host, port, path, parameters);
+    }
+
+    public String toFullString() {
+        if (full != null) {
+            return full;
+        }
+        return full = buildString(true, true);
+    }
+
+    private String buildString(boolean appendSecret, boolean appendParameter, String... parameters) {
+        return buildString(appendSecret, appendParameter, false, false, parameters);
+    }
+
+    private String buildString(boolean appendUser, boolean appendParameter, boolean useIP, boolean useService, String... parameters) {
+        StringBuilder buf = new StringBuilder();
+        if (protocol != null && protocol.length() > 0) {
+            buf.append(protocol);
+            buf.append("://");
+        }
+        if (appendUser && secret != null && secret.length() > 0) {
+            buf.append(secret);
+            buf.append("@");
+        }
+        String host;
+        if (useIP) {
+            host = getIp();
+        } else {
+            host = getHost();
+        }
+        if (host != null && host.length() > 0) {
+            buf.append(host);
+            if (port > 0) {
+                buf.append(":");
+                buf.append(port);
+            }
+        }
+        String path;
+        if (useService) {
+            path = getServiceKey();
+        } else {
+            path = getPath();
+        }
+        if (path != null && path.length() > 0) {
+            buf.append("/");
+            buf.append(path);
+        }
+        if (appendParameter) {
+            buildParams(buf, true, parameters);
+        }
+        return buf.toString();
+    }
+
+    private void buildParams(StringBuilder buf, boolean concat, String[] parameters) {
+        if (getParams() != null && getParams().size() > 0) {
+            List<String> includes = (parameters == null || parameters.length == 0 ? null : Arrays.asList(parameters));
+            boolean first = true;
+            for (Map.Entry<String, String> entry : new TreeMap<String, String>(getParams()).entrySet()) {
+                if (entry.getKey() != null && entry.getKey().length() > 0
+                        && (includes == null || includes.contains(entry.getKey()))) {
+                    if (first) {
+                        if (concat) {
+                            buf.append("?");
+                        }
+                        first = false;
+                    } else {
+                        buf.append("&");
+                    }
+                    buf.append(entry.getKey());
+                    buf.append("=");
+                    buf.append(entry.getValue() == null ? "" : entry.getValue().trim());
+                }
+            }
+        }
+    }
+
+    public String getServiceKey() {
+        String inf = getServiceInterface();
+        if (inf == null) return null;
+        StringBuilder buf = new StringBuilder();
+        String group = getParam(Constants.PARAMETER.GROUP_KEY);
+        if (group != null && group.length() > 0) {
+            buf.append(group).append("/");
+        }
+        buf.append(inf);
+        String version = getParam(Constants.PARAMETER.VERSION_KEY);
+        if (version != null && version.length() > 0) {
+            buf.append(":").append(version);
+        }
+        return buf.toString();
+    }
+
+    public String getServiceInterface() {
+        return getParam(Constants.PARAMETER.INTERFACE_KEY, path);
     }
 
     public Map<String, String> getParams() {
